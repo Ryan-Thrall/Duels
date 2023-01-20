@@ -38,4 +38,24 @@ public class GamesRepo : BaseRepo
     data.Id = _db.ExecuteScalar<int>(sql, data);
     return data;
   }
+
+  public List<Game> GetAvailableGames()
+  {
+    var sql = @"
+    SELECT 
+    g.*,
+    a.*
+    FROM games g
+    JOIN accounts a ON a.id = g.creatorId
+    GROUP BY g.id
+    ;";
+
+    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    {
+      g.Creator = p;
+      return g;
+    }).ToList();
+
+
+  }
 }

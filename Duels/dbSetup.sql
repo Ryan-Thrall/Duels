@@ -17,7 +17,7 @@ CREATE TABLE
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
         creatorId VARCHAR(255),
         title VARCHAR(255),
-        playerCount MEDIUMINT,
+        playerCount INT DEFAULT 0,
         playerLimit INT NOT NULL,
         isPrivate TINYINT NOT NULL,
         isRanked TINYINT NOT NULL,

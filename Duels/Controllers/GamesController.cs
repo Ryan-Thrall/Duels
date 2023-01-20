@@ -27,6 +27,10 @@ public class GamesController : ControllerBase
         throw new Exception("ERROR: User not Found, Please Relogin and try again.");
       }
 
+      // userInfo = new Profile();
+      // Profile profile = (Profile)userInfo;
+
+
       Game game = _gs.CreateGame(data, userInfo);
       return Ok(game);
     }
@@ -41,7 +45,7 @@ public class GamesController : ControllerBase
   {
     try
     {
-      Game games = _gs.GetAvailableGames();
+      List<Game> games = _gs.GetAvailableGames();
       return Ok(games);
     }
     catch (Exception e)

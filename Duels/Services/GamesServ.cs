@@ -19,12 +19,13 @@ public class GamesServ
 
 
     Game game = _gr.CreateGame(data);
+    game.Creator = userInfo;
     return game;
   }
 
-  public Game GetAvailableGames()
+  public List<Game> GetAvailableGames()
   {
-    throw new NotImplementedException();
+    return _gr.GetAvailableGames();
   }
 
 
