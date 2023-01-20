@@ -12,7 +12,7 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS games(
-        id VARCHAR(255) NOT NULL primary key COMMENT 'primary key',
+        id INT NOT NULL AUTO_INCREMENT primary key COMMENT 'primary key',
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
         creatorId VARCHAR(255),
@@ -20,6 +20,7 @@ CREATE TABLE
         playerCount MEDIUMINT,
         playerLimit INT NOT NULL,
         isPrivate TINYINT NOT NULL,
+        isRanked TINYINT NOT NULL,
         password VARCHAR(255),
         mapId INT NOT NULL,
         status VARCHAR(255),
@@ -27,3 +28,5 @@ CREATE TABLE
         Foreign Key (creatorId) REFERENCES accounts(id) -- Foreign Key (winnerId) REFERENCES players(id)
         -- Foreign Key (mapId) REFERENCES maps(id)
     ) default charset utf8 COMMENT '';
+
+SELECT * FROM games;

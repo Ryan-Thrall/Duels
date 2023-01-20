@@ -19,6 +19,7 @@ public class Game : IHasCreator
   // Private Game Variables
   public bool IsPrivate { get; set; }
   public string Password { get; set; }
+  public bool IsRanked { get; set; }
 
   // IHasCreator Variables
   public int Id { get; set; }
