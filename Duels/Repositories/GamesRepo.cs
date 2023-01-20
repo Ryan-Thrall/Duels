@@ -41,12 +41,15 @@ public class GamesRepo : BaseRepo
 
   public List<Game> GetAvailableGames()
   {
+    string status = "Waiting For Players";
+
     var sql = @"
     SELECT 
     g.*,
     a.*
     FROM games g
     JOIN accounts a ON a.id = g.creatorId
+    WHERE g.Status = @status
     GROUP BY g.id
     ;";
 
@@ -54,7 +57,7 @@ public class GamesRepo : BaseRepo
     {
       g.Creator = p;
       return g;
-    }).ToList();
+    }, new { status }).ToList();
 
 
   }

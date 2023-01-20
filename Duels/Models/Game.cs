@@ -1,4 +1,4 @@
-
+namespace Duels.Models;
 
 public class Game : IHasCreator
 {
