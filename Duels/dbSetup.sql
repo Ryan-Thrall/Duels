@@ -54,3 +54,13 @@ CREATE TABLE
     ) default charset utf8 COMMENT '';
 
 SELECT * FROM players;
+
+SELECT
+    p.*,
+    g.id AS gid,
+    a.id as aid
+FROM players p
+    JOIN accounts a on a.id = p.creatorId
+    LEFT JOIN games g on g.id = p.gameId
+WHERE p.gameId = 2
+GROUP BY p.id;

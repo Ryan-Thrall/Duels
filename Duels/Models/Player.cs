@@ -6,6 +6,7 @@ public class Player : IHasCreator
   public string Faction { get; set; }
   public int PlayerNum { get; set; }
   public int GameId { get; set; }
+  public Game Game { get; set; }
   public string Status { get; set; }
 
   // IHasCreator Variables

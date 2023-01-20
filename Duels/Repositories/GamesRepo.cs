@@ -61,4 +61,36 @@ public class GamesRepo : BaseRepo
 
 
   }
+
+  public Game GetGameById(int gameId)
+  {
+    var sql = @"
+    SELECT
+    g.*,
+    a.*
+    FROM games g
+    JOIN accounts a ON a.id = g.creatorId
+    WHERE g.id = @gameId
+    GROUP BY g.id
+    ;";
+
+    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    {
+      g.Creator = p;
+      return g;
+    }, new { gameId }).FirstOrDefault();
+  }
+
+  public Game AddPlayerToGame(Game game)
+  {
+    var sql = @"
+    UPDATE games SET
+    playerCount = @PlayerCount
+    WHERE id = @Id
+    ;";
+
+    _db.Execute(sql, game);
+
+    return game;
+  }
 }
