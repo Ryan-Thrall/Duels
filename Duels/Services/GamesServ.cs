@@ -31,10 +31,16 @@ public class GamesServ
   }
 
   // Get Game By Id
-  // REVIEW Make Accessible to Client Please ;)
   public Game GetGameById(int gameId)
   {
-    return _gr.GetGameById(gameId);
+    Game game = _gr.GetGameById(gameId);
+
+    if (game == null)
+    {
+      throw new Exception("Game Not Found.");
+    }
+
+    return game;
   }
 
   // Put the new playerCount on the game object
@@ -43,5 +49,9 @@ public class GamesServ
     return _gr.AddPlayerToGame(game);
   }
 
-
+  // Get the games that the users account is playing in
+  public List<Game> GetMyGames(Account userInfo)
+  {
+    return _gr.GetMyGames(userInfo.Id);
+  }
 }

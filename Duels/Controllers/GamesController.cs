@@ -49,4 +49,41 @@ public class GamesController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [HttpGet("{gameId}")]
+  public ActionResult<Game> GetGameById(int gameId)
+  {
+    try
+    {
+
+      Game game = _gs.GetGameById(gameId);
+      return Ok(game);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [Authorize]
+  [HttpGet("myGames")]
+  public async Task<ActionResult<List<Game>>> GetMyGames()
+  {
+    try
+    {
+      // Access User Info, Throw error on Fail
+      Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+      if (userInfo == null || userInfo.Id == null)
+      {
+        throw new Exception("ERROR: User not Found, Please Relogin and try again.");
+      }
+
+      List<Game> games = _gs.GetMyGames(userInfo);
+      return Ok(games);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }

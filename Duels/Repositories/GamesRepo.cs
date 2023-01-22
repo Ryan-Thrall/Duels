@@ -93,4 +93,25 @@ public class GamesRepo : BaseRepo
 
     return game;
   }
+
+  public List<Game> GetMyGames(string accountId)
+  {
+    var sql = @"
+    SELECT
+    g.*,
+    a.*,
+    p.creatorId,
+    p.gameId
+    FROM games g
+    JOIN accounts a ON a.id = g.creatorId
+    LEFT JOIN players p on p.gameId = g.id
+    WHERE p.creatorId = @accountId
+    ;";
+
+    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    {
+      g.Creator = p;
+      return g;
+    }, new { accountId }).ToList();
+  }
 }

@@ -55,12 +55,14 @@ CREATE TABLE
 
 SELECT * FROM players;
 
-SELECT
-    p.*,
-    g.id AS gid,
-    a.id as aid
+SELECT g.*, a.*, p.*
+FROM games g
+    JOIN accounts a ON a.id = g.creatorId
+    LEFT JOIN players p on p.gameId = g.id
+WHERE
+    p.creatorId = "6329ea16910987bbc8f41058";
+
+SELECT p.*
 FROM players p
-    JOIN accounts a on a.id = p.creatorId
-    LEFT JOIN games g on g.id = p.gameId
-WHERE p.gameId = 2
-GROUP BY p.id;
+WHERE
+    p.creatorId = 6329 ea16910987bbc8f41058;

@@ -35,6 +35,21 @@ public class PlayersController : ControllerBase
     }
   }
 
+  [HttpGet("{gameId}")]
+  public ActionResult<List<Player>> GetPlayersByGame(int gameId)
+  {
+    try
+    {
+
+      List<Player> players = _ps.GetPlayersByGame(gameId);
+      return Ok(players);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
 
 
 }
