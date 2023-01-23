@@ -45,7 +45,6 @@ public class PlayersRepo : BaseRepo
     JOIN accounts a on a.id = p.creatorId
     LEFT JOIN games g on g.id = p.gameId
     WHERE p.gameId = @gameId
-    GROUP BY p.id
     ;";
 
     return _db.Query<Player, Profile, Player>(sql, (p, pr) =>

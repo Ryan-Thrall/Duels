@@ -10,5 +10,7 @@ export const AppState = reactive({
 
   myGames: [],
 
+  activeGame: {},
+
   players: []
 })

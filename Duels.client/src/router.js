@@ -21,7 +21,12 @@ const routes = [
     name: 'Account',
     component: loadPage('AccountPage'),
     beforeEnter: authGuard
-  }
+  },
+  {
+    path: '/game/:gameId',
+    name: 'Game',
+    component: loadPage('GamePage'),
+  },
 ]
 
 export const router = createRouter({

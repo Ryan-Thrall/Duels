@@ -1,16 +1,76 @@
 <template>
-  <div class="home flex-grow-1 d-flex flex-column align-items-center justify-content-center">
-    <div class="home-card p-5 bg-white rounded elevation-3">
-      <img src="https://bcw.blob.core.windows.net/public/img/8600856373152463" alt="CodeWorks Logo"
-        class="rounded-circle">
-      <h1 class="my-5 bg-dark text-white p-3 rounded text-center">
-        Vue 3 Starter
-      </h1>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1>Lobby</h1>
+      </div>
+      <GameCard v-for="g in games" :key="g.id" :game="g" class="p-2" />
     </div>
+
+    <div class="row">
+      <div class="col-12">
+        <h1>My Games</h1>
+      </div>
+      <GameCard v-for="g in myGames" :key="g.id" :game="g" class="p-2" />
+    </div>
+
+    <div class="row d-flex justify-content-center">
+      <div class="col-11 card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-center">
+            <h1>Host a Game</h1>
+          </div>
+
+
+          <form class="form" @submit.prevent="createGame">
+            <div class="form-floating mb-3">
+              <input v-model="editable.title" type="text" class="form-control" id="floatingInput" placeholder="Title">
+              <label for="floatingInput">Lobby Name</label>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center">
+              <label for="floatingPlayers" class="me-2">{{ editable.playerLimit }} Players</label>
+              <input v-model="editable.playerLimit" type="range" class="" id="floatingPlayers"
+                placeholder="# of Players" max="6" min="2">
+
+            </div>
+
+            <div class="mb-3">
+              <input v-model="editable.isPrivate" type="checkbox" class="m-2" id="Private">
+              <label for="Private">Private Game?</label>
+            </div>
+
+            <div class="form-floating mb-3" v-if="editable.isPrivate">
+              <input v-model="editable.password" type="password" class="form-control" id="floatingPassword"
+                placeholder="Password" maxlength="10">
+              <label for="floatingPassword">Password</label>
+            </div>
+
+            <div>
+              <select v-model="editable.mapName" name="map" id="Map" required>
+                <option value="map1" selected>Map1</option>
+                <option value="map2">Map2</option>
+                <option value="map3">Map3</option>
+              </select>
+            </div>
+
+            <div class="mt-2">
+              <button type="submit" class="btn btn-primary">Host a Game</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
   </div>
+
 </template>
 
 <script>
+import { ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { onMounted } from 'vue';
 import { AppState } from '../AppState.js';
@@ -19,6 +79,11 @@ import Pop from '../utils/Pop.js';
 
 export default {
   setup() {
+    const editable = ref({
+      playerLimit: 2,
+      mapName: "map1"
+    })
+
     async function GetGames() {
       try {
         await gamesService.getGames();
@@ -32,8 +97,18 @@ export default {
     })
 
     return {
+      editable,
+
       games: computed(() => AppState.games),
-      myGames: computed(() => AppState.games),
+      myGames: computed(() => AppState.myGames),
+
+      async createGame() {
+        try {
+          await gamesService.createGame(editable.value)
+        } catch (error) {
+          Pop.error(error, "[Creating a Game]")
+        }
+      }
     }
   }
 }

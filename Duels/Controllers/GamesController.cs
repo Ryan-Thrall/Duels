@@ -6,12 +6,14 @@ public class GamesController : ControllerBase
 {
   private readonly Auth0Provider _auth;
   private readonly GamesServ _gs;
+  private readonly PlayersServ _ps;
 
 
-  public GamesController(Auth0Provider auth, GamesServ gs)
+  public GamesController(Auth0Provider auth, GamesServ gs, PlayersServ ps)
   {
     _auth = auth;
     _gs = gs;
+    _ps = ps;
   }
 
   [Authorize]
@@ -28,6 +30,12 @@ public class GamesController : ControllerBase
       }
 
       Game game = _gs.CreateGame(data, userInfo);
+
+      Player player = new Player();
+
+      _ps.JoinGame(player, game.Id, userInfo);
+      game.PlayerCount++;
+
       return Ok(game);
     }
     catch (Exception e)

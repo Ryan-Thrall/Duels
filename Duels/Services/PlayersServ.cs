@@ -53,7 +53,6 @@ public class PlayersServ
   }
 
   // Get all players in a game
-  // NOTE INACCESSIBLE BY CLIENT
   public List<Player> GetPlayersByGame(int gameId)
   {
     return _pr.GetPlayersByGame(gameId);
