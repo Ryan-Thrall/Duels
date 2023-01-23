@@ -55,14 +55,19 @@ CREATE TABLE
 
 SELECT * FROM players;
 
-SELECT g.*, a.*, p.*
-FROM games g
-    JOIN accounts a ON a.id = g.creatorId
-    LEFT JOIN players p on p.gameId = g.id
-WHERE
-    p.creatorId = "6329ea16910987bbc8f41058";
+-- Map SQL
 
-SELECT p.*
-FROM players p
-WHERE
-    p.creatorId = 6329 ea16910987bbc8f41058;
+CREATE TABLE
+    IF NOT EXISTS maps(
+        id INT NOT NULL AUTO_INCREMENT primary key COMMENT 'primary key',
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
+        name VARCHAR(255),
+        image VARCHAR(255),
+        size INT NOT NULL,
+        gameId INT NOT NULL,
+        terrainData VARCHAR(255),
+        spellData VARCHAR(255),
+        troopData VARCHAR(255),
+        structureData VARCHAR(255)
+    ) default charset utf8 COMMENT '';
