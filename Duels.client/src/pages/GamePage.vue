@@ -1,5 +1,6 @@
 <template>
   <h1>{{ game.id }}</h1>
+  <h2>{{ game.map }}</h2>
 </template>
 
 

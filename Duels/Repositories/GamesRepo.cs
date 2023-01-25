@@ -48,16 +48,18 @@ public class GamesRepo : BaseRepo
     var sql = @"
     SELECT 
     g.*,
-    a.*
+    a.*,
+    m.*
     FROM games g
     JOIN accounts a ON a.id = g.creatorId
+    LEFT JOIN maps m ON m.id = g.mapId
     WHERE g.Status = @status
-    GROUP BY g.id
     ;";
 
-    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    return _db.Query<Game, Profile, Map, Game>(sql, (g, p, m) =>
     {
       g.Creator = p;
+      g.Map = m;
       return g;
     }, new { status }).ToList();
 
@@ -69,16 +71,18 @@ public class GamesRepo : BaseRepo
     var sql = @"
     SELECT
     g.*,
-    a.*
+    a.*,
+    m.*
     FROM games g
     JOIN accounts a ON a.id = g.creatorId
+    LEFT JOIN maps m ON m.id = g.mapId
     WHERE g.id = @gameId
-    GROUP BY g.id
     ;";
 
-    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    return _db.Query<Game, Profile, Map, Game>(sql, (g, p, m) =>
     {
       g.Creator = p;
+      g.Map = m;
       return g;
     }, new { gameId }).FirstOrDefault();
   }
@@ -102,17 +106,20 @@ public class GamesRepo : BaseRepo
     SELECT
     g.*,
     a.*,
+    m.*,
     p.creatorId,
     p.gameId
     FROM games g
     JOIN accounts a ON a.id = g.creatorId
+    LEFT JOIN maps m ON m.id = g.mapId
     LEFT JOIN players p on p.gameId = g.id
     WHERE p.creatorId = @accountId
     ;";
 
-    return _db.Query<Game, Profile, Game>(sql, (g, p) =>
+    return _db.Query<Game, Profile, Map, Game>(sql, (g, p, m) =>
     {
       g.Creator = p;
+      g.Map = m;
       return g;
     }, new { accountId }).ToList();
   }

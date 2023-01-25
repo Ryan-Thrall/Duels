@@ -83,3 +83,5 @@ CREATE TABLE
         troopData VARCHAR(255),
         structureData VARCHAR(255)
     ) default charset utf8 COMMENT '';
+
+SELECT * FROM maps;
