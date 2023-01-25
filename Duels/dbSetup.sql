@@ -29,13 +29,25 @@ CREATE TABLE
         isRanked TINYINT NOT NULL,
         password VARCHAR(255),
         mapId INT NOT NULL,
+        mapName VARCHAR(255),
         status VARCHAR(255),
         winnerId INT,
-        Foreign Key (creatorId) REFERENCES accounts(id),
-        Foreign Key (winnerId) REFERENCES players(id) -- Foreign Key (mapId) REFERENCES maps(id)
+        Foreign Key (creatorId) REFERENCES accounts(id) ON DELETE CASCADE,
+        Foreign Key (winnerId) REFERENCES players(id) ON DELETE CASCADE,
+        Foreign Key (mapId) REFERENCES maps(id) ON DELETE CASCADE
     ) default charset utf8 COMMENT '';
 
 SELECT * FROM games;
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- to disable them
+
+SET FOREIGN_KEY_CHECKS=1;
+
+-- to re-enable them
+
+DROP TABLE games;
 
 -- Player SQL
 

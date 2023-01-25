@@ -12,6 +12,8 @@ export class Game {
     this.title = data.title
     this.playerLimit = data.playerLimit
     this.mapId = data.mapId
+    this.mapName = data.mapName;
+    this.map = data.map;
 
     // Game Status Variables
     this.winnerId = data.winnerId

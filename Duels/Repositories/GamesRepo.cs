@@ -16,6 +16,7 @@ public class GamesRepo : BaseRepo
       isPrivate,
       isRanked,
       mapId,
+      mapName,
       status
     )
     VALUES (
@@ -25,6 +26,7 @@ public class GamesRepo : BaseRepo
       @IsPrivate,
       @IsRanked,
       @MapId,
+      @MapName,
       @Status
     );
     SELECT LAST_INSERT_ID()

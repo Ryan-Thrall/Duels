@@ -5,8 +5,8 @@ public class Map : IDbItem<int>
 
   public string Name { get; set; }
   public string Image { get; set; }
-  public string Size { get; set; }
-  public string GameId { get; set; }
+  public int Size { get; set; }
+  public int GameId { get; set; }
   public string TerrainData { get; set; }
   public string SpellData { get; set; }
   public string TroopData { get; set; }

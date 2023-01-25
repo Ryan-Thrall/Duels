@@ -7,13 +7,15 @@ public class GamesController : ControllerBase
   private readonly Auth0Provider _auth;
   private readonly GamesServ _gs;
   private readonly PlayersServ _ps;
+  private readonly MapsServ _ms;
 
 
-  public GamesController(Auth0Provider auth, GamesServ gs, PlayersServ ps)
+  public GamesController(Auth0Provider auth, GamesServ gs, PlayersServ ps, MapsServ ms)
   {
     _auth = auth;
     _gs = gs;
     _ps = ps;
+    _ms = ms;
   }
 
   [Authorize]
@@ -29,12 +31,18 @@ public class GamesController : ControllerBase
         throw new Exception("ERROR: User not Found, Please Relogin and try again.");
       }
 
+      Map map = _ms.GenerateMap(data.MapName, data.Id);
+
+      data.Map = map;
+
       Game game = _gs.CreateGame(data, userInfo);
 
       Player player = new Player();
 
       _ps.JoinGame(player, game.Id, userInfo);
       game.PlayerCount++;
+
+
 
       return Ok(game);
     }

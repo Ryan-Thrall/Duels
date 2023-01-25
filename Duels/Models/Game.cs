@@ -8,7 +8,8 @@ public class Game : IHasCreator
   // Game Settings
   public int PlayerLimit { get; set; }
   public int MapId { get; set; }
-  // public Map Map { get; set; }
+  public string MapName { get; set; }
+  public Map Map { get; set; }
   public string WinnerId { get; set; }
   // public Player Winner { get; set; }
 
