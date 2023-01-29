@@ -1,6 +1,6 @@
 <template>
   <h1>{{ game.id }}</h1>
-  <h2>{{ game.map }}</h2>
+  <canvas id="gameCanvas" width="640" height="480"></canvas>
 </template>
 
 
@@ -32,6 +32,8 @@ export default {
 
     onMounted(() => {
       getGameById();
+      var myGame = new MyGame();
+      gEngine.Core.initializeEngineCore('gameCanvas', myGame);
     })
 
     return {
@@ -43,5 +45,12 @@ export default {
 
 
 <style lang="scss" scoped>
-
+#gameCanvas {
+  background-color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
 </style>

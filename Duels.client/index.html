@@ -1,24 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <link rel="icon" href="https://bcw.blob.core.windows.net/public/img/9977764104160066" />
-  <title>
-    Duels.client
-  </title>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="https://bcw.blob.core.windows.net/public/img/9977764104160066" />
+    <title>
+      Duels.client
+    </title>
+  </head>
 
-<body>
-  <noscript>
-    <strong>We're sorry but Duels.client doesn't work properly without JavaScript
-      enabled. Please enable it to continue.</strong>
-  </noscript>
-  <div id="app"></div>
-  <!-- built files will be auto injected -->
-  <script type="module" src="./src/main.js"></script>
-</body>
+  <body>
+    <noscript>
+      <strong>We're sorry but Duels.client doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script type="module" src="./src/main.js"></script>
+
+    <!-- gl-matrix library -->
+    <script src="./src/engine/lib/gl-matrix.js"></script>
+
+    <!-- Engine code -->
+    <!-- Core of Engine -->
+    <script src="./src/engine/Engine/Core/Engine_Core.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_VertexBuffer.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_GameLoop.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_Input.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_Physics.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_Particle.js"></script>
+    <script src="./src/engine/Engine/Core/Engine_LayerManager.js"></script>
+    <!-- Resource support -->
+    <script src="./src/engine/Engine/Core/Resources/Engine_ResourceMap.js"></script>
+    <script src="./src/engine/Engine/Core/Resources/Engine_TextFileLoader.js"></script>
+    <script src="./src/engine/Engine/Core/Resources/Engine_DefaultResources.js"></script>
+    <script src="./src/engine/Engine/Core/Resources/Engine_AudioClips.js"></script>
+    <script src="./src/engine/Engine/Core/Resources/Engine_Textures.js"></script>
+    <script src="./src/engine/Engine/Core/Resources/Engine_Fonts.js"></script>
+    <script src="./src/engine/Engine/Scene.js"></script>
+    <script src="./src/engine/Engine/Material.js"></script>
+    <!--Lights -->
+    <script src="./src/engine/Engine/Lights/Light.js"></script>
+    <script src="./src/engine/Engine/Lights/LightSet.js"></script>
+    <!-- Utilities -->
+    <script src="./src/engine/Engine/Utils/Transform.js"></script>
+    <script src="./src/engine/Engine/Utils/BoundingBox.js"></script>
+    <script src="./src/engine/Engine/Utils/Interpolate.js"></script>
+    <script src="./src/engine/Engine/Utils/InterpolateVec2.js"></script>
+    <script src="./src/engine/Engine/Utils/ShakePosition.js"></script>
+    <script src="./src/engine/Engine/Utils/CollisionInfo.js"></script>
+    <!-- Renderables -->
+    <script src="./src/engine/Engine/Renderables/Renderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/TextureRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/TextureRenderable_PixelCollision.js"></script>
+    <script src="./src/engine/Engine/Renderables/SpriteRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/SpriteRenderable_PixelCollision.js"></script>
+    <script src="./src/engine/Engine/Renderables/SpriteAnimateRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/FontRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/LineRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/LightRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/IllumRenderable.js"></script>
+    <script src="./src/engine/Engine/Renderables/ParticleRenderable.js"></script>
+    <!-- Shadows -->
+    <script src="./src/engine/Engine/Shadows/ShadowCaster.js"></script>
+    <script src="./src/engine/Engine/Shadows/ShadowReceiver.js"></script>
+    <script src="./src/engine/Engine/Shadows/ShadowReceiver_Stencil.js"></script>
+    <!-- GameObject -->
+    <script src="./src/engine/Engine/GameObjects/GameObject.js"></script>
+    <script src="./src/engine/Engine/GameObjects/GameObject_PixelCollision.js"></script>
+    <script src="./src/engine/Engine/GameObjects/GameObjectSet.js"></script>
+    <script src="./src/engine/Engine/GameObjects/TiledGameObject.js"></script>
+    <script src="./src/engine/Engine/GameObjects/ParallaxGameObject.js"></script>
+    <!-- Particles -->
+    <script src="./src/engine/Engine/Particles/Particle.js"></script>
+    <script src="./src/engine/Engine/Particles/ParticleGameObject.js"></script>
+    <script src="./src/engine/Engine/Particles/ParticleGameObjectSet.js"></script>
+    <script src="./src/engine/Engine/Particles/ParticleEmitter.js"></script>
+    <!-- Physics -->
+    <script src="./src/engine/Engine/Physics/RigidShape.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidShape_Collision.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidShape_Behavior.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidCircle.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidCircle_Collision.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidRectangle.js"></script>
+    <script src="./src/engine/Engine/Physics/RigidRectangle_Collision.js"></script>
+    <!-- Shaders -->
+    <script src="./src/engine/Engine/Shaders/SimpleShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/TextureShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/SpriteShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/LineShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/LightShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/ShaderLightAtIndex.js"></script>
+    <script src="./src/engine/Engine/Shaders/IllumShader.js"></script>
+    <script src="./src/engine/Engine/Shaders/ShaderMaterial.js"></script>
+    <script src="./src/engine/Engine/Shaders/ShadowCasterShader.js"></script>
+    <!-- Camera -->
+    <script src="./src/engine/Engine/Cameras/Camera.js"></script>
+    <script src="./src/engine/Engine/Cameras/Camera_Manipulation.js"></script>
+    <script src="./src/engine/Engine/Cameras/Camera_Input.js"></script>
+    <script src="./src/engine/Engine/Cameras/Camera_Xform.js"></script>
+    <script src="./src/engine/Engine/Cameras/CameraState.js"></script>
+    <script src="./src/engine/Engine/Cameras/CameraShake.js"></script>
+
+
+    <!-- Client game code -->
+    <script src="./src/engine/MyGame/MyGame.js"></script>
+    <script src="./src/engine/MyGame/MyGame_Lights.js"></script>
+    <script src="./src/engine/MyGame/MyGame_LightControl.js"></script>
+    <script src="./src/engine/MyGame/MyGame_MaterialControl.js"></script>
+    <script src="./src/engine/MyGame/MyGame_Shadow.js"></script>
+
+    <!-- Objects -->
+    <script src="./src/engine/MyGame/Objects/Hero.js"></script>
+    <script src="./src/engine/MyGame/Objects/Minion.js"></script>
+  </body>
 
 </html>
