@@ -18,7 +18,7 @@ class GamesService {
 
   async getGameById(gameId) {
     const res = await api.get(`api/games/${gameId}`)
-
+    console.log(res.data)
     AppState.activeGame = new Game(res.data)
   }
 

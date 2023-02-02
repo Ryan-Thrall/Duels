@@ -22,6 +22,9 @@ export default {
       try {
         AppState.activeGame = {}
         let game = await gamesService.getGameById(route.params.gameId);
+        // Initialize the Engine
+        var myGame = new MyGame(AppState.activeGame?.map);
+        gEngine.Core.initializeEngineCore('gameCanvas', myGame);
       } catch (error) {
         router.push({ name: 'Home' })
         Pop.toast('This game is Private!!!', 'info')
@@ -32,9 +35,6 @@ export default {
 
     onMounted(() => {
       getGameById();
-      // console.log(AppState.activeGame)
-      var myGame = new MyGame(AppState.activeGame);
-      gEngine.Core.initializeEngineCore('gameCanvas', myGame);
     })
 
     return {

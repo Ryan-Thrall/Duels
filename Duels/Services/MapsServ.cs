@@ -17,7 +17,7 @@ public class MapsServ
     {
       case "map1":
         map.Size = 24;
-        map.TerrainData = "w-l-l-l-l-w-l-1-1-1-1-w-1-1-1-1-1-1-w-1-1-1-1-w";
+        map.TerrainData = "w-l-l-l-l-w-l-l-l-l-l-w-l-l-l-l-l-l-w-l-l-l-l-w";
         map.SpellData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
         map.TroopData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
         map.StructureData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";

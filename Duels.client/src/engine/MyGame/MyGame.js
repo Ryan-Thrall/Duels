@@ -21,11 +21,11 @@ const { mat2, mat2d, mat4, mat3, quat, quat2, vec2, vec3, vec4 } = glMatrix;
 
 function MyGame(gameData) {
   this.gameData = gameData;
-  console.log(this.gameData)
   this.kSpriteSheet = "src/assets/img/SpriteSheet.png";
 
   this.mCamera = null;
   this.mMap = null;
+  this.mMapTiles = [];
 
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -48,14 +48,41 @@ MyGame.prototype.initialize = function () {
     [0, 0, 640, 480]
   );
   this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-  console.log(this.gameData)
-  this.mMap = this.gameData;
+  this.mMap = this.gameData.terrainData.split("-");
   console.log(this.mMap)
 
-  this.mGrassTile = new LightRenderable(this.kSpriteSheet);
-  this.mGrassTile.getXform().setSize(10, 10);
-  this.mGrassTile.getXform().setPosition(10, 65);
-  this.mGrassTile.setElementPixelPositions(0, 64, 64, 0);
+  var x = 2;
+  var y = 0;
+  var r = 1;
+  var pp = [];
+  for (tile in this.mMap) {
+    if (this.mMap[tile] == "l") {
+      pp = [0, 64, 64, 0]
+    } else if (this.mMap[tile] == "w") {
+      pp = [64, 128, 64, 0]
+    }
+
+
+    this.mMapTiles.push(new LightRenderable(this.kSpriteSheet));
+    this.mMapTiles[tile].getXform().setSize(10, 10);
+    this.mMapTiles[tile].getXform().setPosition(x * 10 + 10, 68 - (y * 10));
+    this.mMapTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
+    x += 1;
+    if (x > 5 && r == 1 || x > 6 && r == 3) {
+      y += 0.75;
+      x = 1.5;
+      r++;
+    } else if (x > 6 && r == 2) {
+      y += 0.75;
+      x = 1;
+      r++
+    } else if (x > 6 && r == 4) {
+      y += 0.75;
+      x = 2;
+      r++
+    }
+  }
+
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -64,7 +91,11 @@ MyGame.prototype.draw = function () {
   gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]);
 
   this.mCamera.setupViewProjection();
-  this.mGrassTile.draw(this.mCamera);
+
+  for (tile in this.mMapTiles) {
+    this.mMapTiles[tile].draw(this.mCamera);
+  }
+
   // this.mGrassTile.draw(this.mCamera.getVPMatrix());
 };
 
