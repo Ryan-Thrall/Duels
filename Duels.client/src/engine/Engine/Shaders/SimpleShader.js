@@ -85,7 +85,7 @@ SimpleShader.prototype.activateShader = function (pixelColor, aCamera) {
 // Loads per-object model transform to the vertex shader
 SimpleShader.prototype.loadObjectTransform = function (modelTransform) {
     var gl = gEngine.Core.getGL();
-        // loads the modelTransform matrix into webGL to be used by the vertex shader
+    // loads the modelTransform matrix into webGL to be used by the vertex shader
     gl.uniformMatrix4fv(this.mModelTransform, false, modelTransform);
 };
 

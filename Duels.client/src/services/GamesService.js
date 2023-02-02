@@ -6,21 +6,18 @@ import { api } from "./AxiosService.js";
 class GamesService {
   async getGames() {
     const res = await api.get('api/games')
-    console.log(res.data)
 
     AppState.games = res.data.map(g => new Game(g))
   }
 
   async getMyGames() {
     const res = await api.get('api/games/myGames')
-    console.log(res.data)
 
     AppState.myGames = res.data.map(g => new Game(g))
   }
 
   async getGameById(gameId) {
     const res = await api.get(`api/games/${gameId}`)
-    console.log(res.data)
 
     AppState.activeGame = new Game(res.data)
   }

@@ -32,7 +32,8 @@ export default {
 
     onMounted(() => {
       getGameById();
-      var myGame = new MyGame();
+      // console.log(AppState.activeGame)
+      var myGame = new MyGame(AppState.activeGame);
       gEngine.Core.initializeEngineCore('gameCanvas', myGame);
     })
 
