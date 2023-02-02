@@ -77,7 +77,7 @@ MyGame.prototype.initialize = function () {
       x = 1;
       r++
     } else if (x > 6 && r == 4) {
-      y += 0.75;
+      y += 0.8;
       x = 2;
       r++
     }
