@@ -15,7 +15,7 @@ public class GamesServ
     data.CreatorId = userInfo.Id;
     data.Status = "Waiting For Players";
     data.IsRanked = false;
-    data.MapId = 1;
+    data.MapId = data.Map.Id;
     data.WinnerId = null;
 
 

@@ -23,6 +23,7 @@ class GamesService {
   }
 
   async createGame(data) {
+    console.log(data)
     const res = await api.post(`api/games`, data)
     console.log(res.data)
     AppState.games = [new Game(res.data), ...AppState.games]
