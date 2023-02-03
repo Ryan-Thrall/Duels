@@ -78,7 +78,7 @@ MyGame.prototype.update = function () {
 
 // Create a list of tiles in the map
 MyGame.prototype.initializeMap = function () {
-  var x = 2;
+  var x = 2.5;
   var y = 0;
   var r = 1;
   var pp = [];
@@ -91,21 +91,25 @@ MyGame.prototype.initializeMap = function () {
 
     this.mMapTiles.push(new LightRenderable(this.kSpriteSheet));
     this.mMapTiles[tile].getXform().setSize(10, 10);
-    this.mMapTiles[tile].getXform().setPosition(x * 10 + 10, 68 - (y * 10));
+    this.mMapTiles[tile].getXform().setPosition(x * 10 + 10, 60 - (y * 10));
     this.mMapTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
     x += 1;
-    if (x > 5 && r == 1 || x > 6 && r == 3) {
-      y += 0.75;
-      x = 1.5;
-      r++;
-    } else if (x > 6 && r == 2) {
-      y += 0.75;
-      x = 1;
-      r++
-    } else if (x > 6 && r == 4) {
+    if (x > 6 && r == 1 || x > 7 && r == 5) {
       y += 0.75;
       x = 2;
+      r++;
+    } else if (x > 6 && r == 2 || x > 7 && r == 4) {
+      y += 0.75;
+      x = 1.5;
       r++
+    } else if (x > 7 && r == 3) {
+      y += 0.75;
+      x = 1;
+      r++;
+    } else if (x > 6 && r == 6) {
+      y += 0.75;
+      x = 2.5;
+      r++;
     }
   }
 }
