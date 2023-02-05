@@ -30,6 +30,14 @@ class GamesService {
 
     AppState.myGames = [new Game(res.data), ...AppState.myGames]
   }
+
+  async deleteGame(gameId) {
+    const res = await api.delete(`api/games/${gameId}`)
+
+    AppState.games = AppState.games.filter(g => g.id != gameId)
+
+    AppState.myGames = AppState.myGames.filter(g => g.id != gameId)
+  }
 }
 
 export const gamesService = new GamesService();

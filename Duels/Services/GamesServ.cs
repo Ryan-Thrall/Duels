@@ -19,7 +19,7 @@ public class GamesServ
     data.WinnerId = null;
 
 
-    Game game = _gr.CreateGame(data);
+    Game game = _gr.CreateGame(data, data.Map);
     game.Creator = userInfo;
     return game;
   }
@@ -53,5 +53,17 @@ public class GamesServ
   public List<Game> GetMyGames(Account userInfo)
   {
     return _gr.GetMyGames(userInfo.Id);
+  }
+
+  public Game DeleteGame(int id, string userId)
+  {
+    Game game = GetGameById(id);
+    if (game.CreatorId != userId)
+    {
+      throw new Exception("You don't have permission to delete this game.");
+    }
+
+    _gr.DeleteKeep(id);
+    return game;
   }
 }

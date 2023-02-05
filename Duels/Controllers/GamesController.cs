@@ -31,6 +31,7 @@ public class GamesController : ControllerBase
         throw new Exception("ERROR: User not Found, Please Relogin and try again.");
       }
 
+
       Map map = _ms.GenerateMap(data.MapName, data.Id);
 
       data.Map = map;
@@ -96,6 +97,28 @@ public class GamesController : ControllerBase
 
       List<Game> games = _gs.GetMyGames(userInfo);
       return Ok(games);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [Authorize]
+  [HttpDelete("{id}")]
+  public async Task<ActionResult<Game>> DeleteGame(int id)
+  {
+    try
+    {
+      // Access User Info, Throw error on Fail
+      Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+      if (userInfo == null || userInfo.Id == null)
+      {
+        throw new Exception("ERROR: User not Found, Please Relogin and try again.");
+      }
+
+      Game deletedGame = _gs.DeleteGame(id, userInfo?.Id);
+      return Ok(deletedGame);
     }
     catch (Exception e)
     {

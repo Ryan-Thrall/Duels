@@ -33,7 +33,7 @@ CREATE TABLE
         status VARCHAR(255),
         winnerId INT,
         Foreign Key (creatorId) REFERENCES accounts(id) ON DELETE CASCADE,
-        Foreign Key (winnerId) REFERENCES players(id) ON DELETE CASCADE,
+        Foreign Key (winnerId) REFERENCES players(id),
         Foreign Key (mapId) REFERENCES maps(id) ON DELETE CASCADE
     ) default charset utf8 COMMENT '';
 
@@ -62,10 +62,15 @@ CREATE TABLE
         gameId INT NOT NULL,
         status VARCHAR(255),
         Foreign Key (creatorId) REFERENCES accounts(id),
-        Foreign Key (gameId) REFERENCES games(id)
+        Foreign Key (gameId) REFERENCES games(id) ON DELETE CASCADE
     ) default charset utf8 COMMENT '';
 
 SELECT * FROM players;
+
+DELETE games, maps
+FROM games
+    INNER JOIN maps ON maps.gameId = 1
+WHERE games.id = 1;
 
 -- Map SQL
 

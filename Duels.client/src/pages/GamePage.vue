@@ -1,6 +1,7 @@
 <template>
-  <h1>{{ game.id }}</h1>
-  <canvas id="gameCanvas" width="640" height="480"></canvas>
+  <div>
+    <canvas id="gameCanvas" width="640" height="480"></canvas>
+  </div>
 </template>
 
 

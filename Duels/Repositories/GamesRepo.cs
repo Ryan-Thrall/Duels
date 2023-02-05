@@ -6,7 +6,7 @@ public class GamesRepo : BaseRepo
   {
   }
 
-  public Game CreateGame(Game data)
+  public Game CreateGame(Game data, Map map)
   {
     var sql = @"
     INSERT INTO games(
@@ -36,8 +36,19 @@ public class GamesRepo : BaseRepo
     data.CreatedAt = DateTime.Now;
     data.UpdatedAt = DateTime.Now;
 
-
     data.Id = _db.ExecuteScalar<int>(sql, data);
+
+    data.Map.GameId = data.Id;
+
+    var newsql = @"
+    UPDATE maps SET 
+    gameId = @GameId
+    WHERE id = @Id
+    ;";
+
+    _db.Execute(newsql, map);
+
+
     return data;
   }
 
@@ -122,5 +133,15 @@ public class GamesRepo : BaseRepo
       g.Map = m;
       return g;
     }, new { accountId }).ToList();
+  }
+
+  public void DeleteKeep(int id)
+  {
+    string sql = @"DELETE games, maps
+FROM games
+    INNER JOIN maps ON maps.gameId = @id
+WHERE games.id = @id;";
+
+    _db.Execute(sql, new { id });
   }
 }

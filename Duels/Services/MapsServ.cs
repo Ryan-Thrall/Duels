@@ -16,13 +16,6 @@ public class MapsServ
     switch (mapName)
     {
       case "map1":
-        map.Size = 24;
-        map.TerrainData = "w-l-l-l-l-w-l-l-l-l-l-w-l-l-l-l-l-l-w-l-l-l-l-w";
-        map.SpellData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
-        map.TroopData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
-        map.StructureData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
-        break;
-      case "map2":
         map.Size = 37;
         map.TerrainData = "w-l-l-l-l-w-l-l-l-l-l-w-l-l-l-l-l-l-w-l-l-l-l-l-l-l-w-l-l-l-l-l-w-l-l-l-w";
         map.SpellData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";

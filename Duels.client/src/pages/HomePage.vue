@@ -49,8 +49,6 @@
             <div>
               <select v-model="editable.mapName" name="map" id="Map" required>
                 <option value="map1" selected>Map1</option>
-                <option value="map2">Map2</option>
-                <option value="map3">Map3</option>
               </select>
             </div>
 
