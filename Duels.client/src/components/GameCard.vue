@@ -9,10 +9,12 @@
           <h4 class="m-0">{{ game.playerCount }}/{{ game.playerLimit }}</h4>
         </div>
       </router-link>
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#joinGameModal"
+        @click="setActiveGame(game.id)">Join
+        Game</button>
     </div>
 
   </div>
-
 </template>
 
 
@@ -41,6 +43,15 @@ export default {
           Pop.success("Your Game has been deleted FOREVER!!!")
         } catch (error) {
           Pop.error(error, "[Deleting Game]")
+        }
+      },
+
+      async setActiveGame(gameId) {
+        try {
+          await gamesService.getGameById(gameId)
+          console.log("Hello")
+        } catch (error) {
+          Pop.error(error, "[Get Game By Id]")
         }
       }
 
