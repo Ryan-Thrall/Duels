@@ -3,14 +3,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Join {{ game.title }}</h5>
+          <h5 class="modal-title">Join {{ game?.title }}</h5>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
 
-          <form class="form" @submit.prevent="joinGame(game.id)">
+          <form class="form" @submit.prevent="joinGame(game?.id)">
 
             <div>
               <input type="radio" id="human" name="faction" value="Human" checked>

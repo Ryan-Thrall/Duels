@@ -1,4 +1,7 @@
 <template>
+  <div class="d-flex justify-content-end me-4 my-2">
+    <button class="btn btn-success" @click="startGame(game.id)">Start Game</button>
+  </div>
   <div>
     <canvas id="gameCanvas" width="640" height="480"></canvas>
   </div>
@@ -12,6 +15,7 @@ import { computed } from '@vue/reactivity';
 import { useRoute, useRouter } from 'vue-router';
 import { gamesService } from '../services/GamesService.js';
 import Pop from '../utils/Pop.js';
+import { playersService } from '../services/PlayersService.js';
 
 export default {
   setup() {
@@ -22,13 +26,13 @@ export default {
     async function getGameById() {
       try {
         AppState.activeGame = {}
-        let game = await gamesService.getGameById(route.params.gameId);
+        await gamesService.getGameById(route.params.gameId);
+        await playersService.getPlayers(route.params.gameId);
         // Initialize the Engine
         var myGame = new MyGame(AppState.activeGame?.map);
         gEngine.Core.initializeEngineCore('gameCanvas', myGame);
       } catch (error) {
-        router.push({ name: 'Home' })
-        Pop.toast('This game is Private!!!', 'info')
+        Pop.error(error, '[Getting Game By Id]')
         AppState.activeGame = null;
 
       }
@@ -40,6 +44,14 @@ export default {
 
     return {
       game: computed(() => AppState.activeGame),
+
+      async startGame(gameId) {
+        try {
+          gamesService.startGame(gameId);
+        } catch (error) {
+          Pop.error(error, "[Starting Game]")
+        }
+      }
     }
   }
 }
