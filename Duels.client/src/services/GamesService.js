@@ -38,6 +38,17 @@ class GamesService {
 
     AppState.myGames = AppState.myGames.filter(g => g.id != gameId)
   }
+
+  async startGame(gameId) {
+    const res = await api.put(`api/games/${gameId}/startGame`)
+
+    AppState.games = AppState.games.filter(g => g.id != gameId)
+    AppState.myGames.forEach(g => {
+      if (g.id = gameId) {
+        g.status = "Turn 1";
+      }
+    })
+  }
 }
 
 export const gamesService = new GamesService();

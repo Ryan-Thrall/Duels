@@ -144,4 +144,17 @@ WHERE games.id = @id;";
 
     _db.Execute(sql, new { id });
   }
+
+  public Game StartGame(Game game)
+  {
+    string sql = @"
+    UPDATE games SET 
+    status = @status
+    WHERE id = @Id
+    ;";
+    game.UpdatedAt = DateTime.Now;
+    _db.Execute(sql, game);
+
+    return game;
+  }
 }

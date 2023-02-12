@@ -7,6 +7,7 @@
         <div class="card-body d-flex justify-content-around align-items-center">
           <h1 class="m-0">{{ game.title }}</h1>
           <h4 class="m-0">{{ game.playerCount }}/{{ game.playerLimit }}</h4>
+          <h5>{{ game.status }}</h5>
         </div>
       </router-link>
       <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#joinGameModal"

@@ -66,4 +66,17 @@ public class GamesServ
     _gr.DeleteKeep(id);
     return game;
   }
+
+  public Game StartGame(int gameId, string userId)
+  {
+    Game game = GetGameById(gameId);
+    if (game.CreatorId != userId)
+    {
+      throw new Exception("You don't have permission to start this game.");
+    }
+
+    game.Status = "Turn 1";
+
+    return _gr.StartGame(game);
+  }
 }

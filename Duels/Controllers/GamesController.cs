@@ -125,4 +125,26 @@ public class GamesController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [Authorize]
+  [HttpPut("{gameId}/startGame")]
+  public async Task<ActionResult<Game>> StartGame(int gameId)
+  {
+    try
+    {
+      // Access User Info, Throw error on Fail
+      Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+      if (userInfo == null || userInfo.Id == null)
+      {
+        throw new Exception("ERROR: User not Found, Please Relogin and try again.");
+      }
+
+      Game startedGame = _gs.StartGame(gameId, userInfo.Id);
+      return Ok(startedGame);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }
