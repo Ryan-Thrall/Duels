@@ -48,8 +48,9 @@ export default {
       async startGame(gameId) {
         try {
           gamesService.startGame(gameId);
+          Pop.toast('The game has started', 'success')
         } catch (error) {
-          Pop.error(error, "[Starting Game]")
+          Pop.error("There aren't enough players to start this game.")
         }
       }
     }

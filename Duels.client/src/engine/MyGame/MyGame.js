@@ -25,6 +25,8 @@ function MyGame(gameData) {
 
   this.mCamera = null;
   this.mMap = null;
+  this.mStructs = null;
+  this.mTroops = null;
   this.mMapTiles = [];
   this.mUnits = [];
   this.mStructures = [];
@@ -50,21 +52,23 @@ MyGame.prototype.initialize = function () {
     [0, 0, 1366, 768]
   );
   this.mCamera.setBackgroundColor([0.796, 0.796, 0.796, 1.0]);// [0.05, 0.02, 0.06, 1.0]
+
   this.mMap = this.gameData.terrainData.split("-");
-  console.log(this.mMap)
+  this.mStructs = this.gameData.structureData.split("-");
+  this.mTroops = this.gameData.troopData.split("-");
 
 
   this.createHexMap();
 
-  this.mStructures.push(new LightRenderable(this.kSpriteSheet));
-  this.mStructures[0].getXform().setSize(8, 8);
-  this.mStructures[0].getXform().setPosition(35, 15.5);
-  this.mStructures[0].setElementPixelPositions(225, 257, 32, 64);
+  // this.mStructures.push(new LightRenderable(this.kSpriteSheet));
+  // this.mStructures[0].getXform().setSize(7, 7);
+  // this.mStructures[0].getXform().setPosition(45, 15.5);
+  // this.mStructures[0].setElementPixelPositions(0, 35, 67, 99);
 
-  this.mUnits.push(new LightRenderable(this.kSpriteSheet));
-  this.mUnits[0].getXform().setSize(3, 3);
-  this.mUnits[0].getXform().setPosition(35, 15);
-  this.mUnits[0].setElementPixelPositions(192, 224, 32, 64);
+  // this.mUnits.push(new LightRenderable(this.kSpriteSheet));
+  // this.mUnits[0].getXform().setSize(3, 3);
+  // this.mUnits[0].getXform().setPosition(35, 15);
+  // this.mUnits[0].setElementPixelPositions(0, 35, 132, 164);
 
 };
 
@@ -114,6 +118,21 @@ MyGame.prototype.createHexMap = function () {
     this.mMapTiles[tile].getXform().setSize(9, 9);
     this.mMapTiles[tile].getXform().setPosition(x * 8.8 + 12, 56.5 - (y * 10));
     this.mMapTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
+
+    if (this.mStructs[tile].substr(1) == "th") {
+      this.mStructures.push(new LightRenderable(this.kSpriteSheet));
+      this.mStructures[this.mStructures.length - 1].getXform().setSize(7, 7);
+      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 12, 57 - (y * 10));
+      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(0, 35, 67, 99);
+    }
+
+    if (this.mTroops[tile].substr(1) == "b") {
+      this.mUnits.push(new LightRenderable(this.kSpriteSheet));
+      this.mUnits[this.mUnits.length - 1].getXform().setSize(3, 3);
+      this.mUnits[this.mUnits.length - 1].getXform().setPosition(x * 8.8 + 12.25, 56.6 - (y * 10));
+      this.mUnits[this.mUnits.length - 1].setElementPixelPositions(0, 35, 132, 164);
+    }
+
     x += 1;
     if (x > 6 && r == 1 || x > 7 && r == 5) {
       y += 0.68;
@@ -132,6 +151,11 @@ MyGame.prototype.createHexMap = function () {
       x = 2.5;
       r++;
     }
+
+
+
+
+
   }
 }
 

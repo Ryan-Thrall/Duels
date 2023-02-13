@@ -18,14 +18,11 @@ class GamesService {
 
   async getGameById(gameId) {
     const res = await api.get(`api/games/${gameId}`)
-    console.log(res.data)
     AppState.activeGame = new Game(res.data)
   }
 
   async createGame(data) {
-    console.log(data)
     const res = await api.post(`api/games`, data)
-    console.log(res.data)
     AppState.games = [new Game(res.data), ...AppState.games]
 
     AppState.myGames = [new Game(res.data), ...AppState.myGames]
@@ -48,6 +45,8 @@ class GamesService {
         g.status = "Turn 1";
       }
     })
+
+    return res.data
   }
 }
 

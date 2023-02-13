@@ -141,8 +141,16 @@ public class GamesController : ControllerBase
       {
         throw new Exception("ERROR: User not Found, Please Relogin and try again.");
       }
-
+      // Update the Game to be Started
       Game startedGame = _gs.StartGame(gameId, userInfo.Id);
+
+      // Add the starting structures and units to the map
+      Map newMap = _ms.SetupMap(startedGame.Map);
+
+      // Update the return with the new Map
+      startedGame.Map = newMap;
+
+      // Send the game back to the client
       return Ok(startedGame);
     }
     catch (Exception e)

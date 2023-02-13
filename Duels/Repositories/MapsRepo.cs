@@ -39,4 +39,18 @@ public class MapsRepo : BaseRepo
     data.Id = _db.ExecuteScalar<int>(sql, data);
     return data;
   }
+
+  public Map SetupMap(Map map)
+  {
+    var sql = @"
+    UPDATE maps SET
+    structureData = @StructureData,
+    troopData = @TroopData
+    WHERE id = @Id
+    ;";
+    map.UpdatedAt = DateTime.Now;
+    _db.Execute(sql, map);
+
+    return map;
+  }
 }

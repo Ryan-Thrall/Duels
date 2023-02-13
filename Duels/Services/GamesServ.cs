@@ -75,6 +75,11 @@ public class GamesServ
       throw new Exception("You don't have permission to start this game.");
     }
 
+    if (game.PlayerCount < 2)
+    {
+      throw new Exception("There aren't enough players to start this game.");
+    }
+
     game.Status = "Turn 1";
 
     return _gr.StartGame(game);
