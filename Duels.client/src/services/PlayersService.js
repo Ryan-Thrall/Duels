@@ -1,10 +1,15 @@
 import { AppState } from "../AppState.js";
 import { api } from "./AxiosService.js";
 import { Player } from "../models/Player.js";
+import { Game } from "../models/Game.js";
 
 class PlayersService {
   async joinGame(data, gameId) {
     const res = await api.post(`api/players/${gameId}`, data)
+
+    AppState.activeGame.playerCount++;
+    AppState.myGames.push(new Game(AppState.activeGame))
+
   }
 
   async getPlayers(gameId) {

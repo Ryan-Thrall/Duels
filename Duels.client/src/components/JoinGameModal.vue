@@ -1,5 +1,5 @@
 <template>
-  <div class="modal modal-xl fade" tabindex="-1" role="dialog">
+  <div class="modal modal-xl fade" id="joinGameModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -43,6 +43,7 @@
 
 <script>
 import { computed } from '@vue/reactivity';
+import { Modal } from 'bootstrap';
 import Pop from '../utils/Pop.js';
 import { playersService } from '../services/PlayersService.js';
 import { AppState } from '../AppState.js';
@@ -53,6 +54,8 @@ export default {
 
       async joinGame(gameId) {
         try {
+          let m = Modal.getOrCreateInstance('#joinGameModal');
+          m.hide()
           let faction;
           let factionSelect = document.getElementsByName('faction');
 

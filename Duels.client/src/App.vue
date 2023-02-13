@@ -2,7 +2,7 @@
   <header>
     <Navbar />
   </header>
-  <main>
+  <main class="position-relative">
     <router-view />
   </main>
   <footer class="bg-hdark text-light">

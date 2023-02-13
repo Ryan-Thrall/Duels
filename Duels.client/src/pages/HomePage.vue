@@ -1,73 +1,22 @@
 <template>
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <h1>Lobby</h1>
+    <div class="row d-flex big-row">
+      <div class="col-4 bg-hblue d-flex justify-content-center align-items-center darken-90">
+        <div class="d-flex flex-column align-items-center">
+          <h1 class="text-hsilver text-shadow">Campaign</h1>
+          <p>Coming Soon</p>
+        </div>
       </div>
-      <GameCard v-for="g in games" :key="g.id" :game="g" class="p-2" />
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <h1>My Games</h1>
+      <div class="col-4 bg-hyellow d-flex justify-content-center align-items-center selectable">
+        <h1 class="text-hdark text-shadow-white">Unranked</h1>
       </div>
-      <GameCard v-for="g in myGames" :key="g.id" :game="g" class="p-2" />
-    </div>
-
-    <div class="row d-flex justify-content-center">
-      <div class="col-11 card mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-center">
-            <h1>Host a Game</h1>
-          </div>
-
-
-          <form class="form" @submit.prevent="createGame">
-            <div class="form-floating mb-3">
-              <input v-model="editable.title" type="text" class="form-control" id="floatingInput" placeholder="Title">
-              <label for="floatingInput">Lobby Name</label>
-            </div>
-
-            <div class="mb-3 d-flex align-items-center">
-              <label for="floatingPlayers" class="me-2">{{ editable.playerLimit }} Players</label>
-              <input v-model="editable.playerLimit" type="range" class="" id="floatingPlayers"
-                placeholder="# of Players" max="6" min="2">
-
-            </div>
-
-            <div class="mb-3">
-              <input v-model="editable.isPrivate" type="checkbox" class="m-2" id="Private">
-              <label for="Private">Private Game?</label>
-            </div>
-
-            <div class="form-floating mb-3" v-if="editable.isPrivate">
-              <input v-model="editable.password" type="password" class="form-control" id="floatingPassword"
-                placeholder="Password" maxlength="10">
-              <label for="floatingPassword">Password</label>
-            </div>
-
-            <div>
-              <select v-model="editable.mapName" name="map" id="Map" required>
-                <option value="hex" selected>Hex</option>
-              </select>
-
-              <select v-model="editable.faction" name="map" id="Map" required>
-                <option value="human" selected>Humans</option>
-                <option value="undead">Undead</option>
-                <option value="robot">Robots</option>
-              </select>
-            </div>
-
-            <div class="mt-2">
-              <button type="submit" class="btn btn-primary">Host a Game</button>
-            </div>
-
-          </form>
-
+      <div class="col-4 bg-hred d-flex justify-content-center align-items-center darken-90">
+        <div class="d-flex flex-column align-items-center">
+          <h1 class="text-hsilver text-shadow">Ranked</h1>
+          <p>Coming Soon</p>
         </div>
       </div>
     </div>
-
 
   </div>
 
@@ -80,6 +29,7 @@ import { onMounted } from 'vue';
 import { AppState } from '../AppState.js';
 import { gamesService } from '../services/GamesService.js';
 import Pop from '../utils/Pop.js';
+import UnrankedForm from '../components/UnrankedForm.vue';
 
 export default {
   setup() {
@@ -87,35 +37,26 @@ export default {
       playerLimit: 2,
       mapName: "hex",
       faction: "human"
-    })
-
+    });
     async function GetGames() {
       try {
         await gamesService.getGames();
-      } catch (error) {
-        Pop.error(error, "[Getting Games]")
+      }
+      catch (error) {
+        Pop.error(error, "[Getting Games]");
       }
     }
-
     onMounted(() => {
       GetGames();
-    })
-
+    });
     return {
       editable,
-
       games: computed(() => AppState.games),
       myGames: computed(() => AppState.myGames),
 
-      async createGame() {
-        try {
-          await gamesService.createGame(editable.value)
-        } catch (error) {
-          Pop.error(error, "[Creating a Game]")
-        }
-      }
-    }
-  }
+    };
+  },
+  components: { UnrankedForm }
 }
 </script>
 
@@ -138,5 +79,20 @@ export default {
       object-position: center;
     }
   }
+}
+
+.big-row {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  // z-index: -1;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 2px #090C08;
+}
+
+.text-shadow-white {
+  text-shadow: 2px 2px 2px #CBCBCB;
 }
 </style>

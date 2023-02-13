@@ -31,6 +31,7 @@ export default {
         // Initialize the Engine
         var myGame = new MyGame(AppState.activeGame?.map);
         gEngine.Core.initializeEngineCore('gameCanvas', myGame);
+
       } catch (error) {
         Pop.error(error, '[Getting Game By Id]')
         AppState.activeGame = null;

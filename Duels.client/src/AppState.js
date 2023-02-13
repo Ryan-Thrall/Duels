@@ -12,5 +12,7 @@ export const AppState = reactive({
 
   activeGame: {},
 
-  players: []
+  players: [],
+
+  webGLInitialized: false,
 })
