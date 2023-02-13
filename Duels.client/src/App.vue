@@ -5,7 +5,7 @@
   <main>
     <router-view />
   </main>
-  <footer class="bg-dark text-light">
+  <footer class="bg-hdark text-light">
     Made with 💖 by CodeWorks
   </footer>
 
@@ -38,5 +38,9 @@ footer {
   display: grid;
   place-content: center;
   height: 32px;
+}
+
+body {
+  // background-color: #F7F5FB;
 }
 </style>

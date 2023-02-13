@@ -3,7 +3,7 @@
     <button class="btn btn-success" @click="startGame(game.id)">Start Game</button>
   </div>
   <div>
-    <canvas id="gameCanvas" width="640" height="480"></canvas>
+    <canvas id="gameCanvas" width="1366" height="768"></canvas>
   </div>
 </template>
 

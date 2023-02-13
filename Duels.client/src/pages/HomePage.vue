@@ -48,7 +48,13 @@
 
             <div>
               <select v-model="editable.mapName" name="map" id="Map" required>
-                <option value="map1" selected>Map1</option>
+                <option value="hex" selected>Hex</option>
+              </select>
+
+              <select v-model="editable.faction" name="map" id="Map" required>
+                <option value="human" selected>Humans</option>
+                <option value="undead">Undead</option>
+                <option value="robot">Robots</option>
               </select>
             </div>
 
@@ -79,7 +85,8 @@ export default {
   setup() {
     const editable = ref({
       playerLimit: 2,
-      mapName: "map1"
+      mapName: "hex",
+      faction: "human"
     })
 
     async function GetGames() {

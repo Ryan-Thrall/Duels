@@ -13,6 +13,8 @@ public class Game : IHasCreator
   public string WinnerId { get; set; }
   // public Player Winner { get; set; }
 
+  public string Faction { get; set; }
+
   // Game Status Variables
   public int PlayerCount { get; set; }
   public string Status { get; set; }

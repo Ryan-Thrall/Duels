@@ -20,7 +20,7 @@ public class GamesController : ControllerBase
 
   [Authorize]
   [HttpPost]
-  public async Task<ActionResult<Game>> CreateGame([FromBody] Game data)
+  public async Task<ActionResult<Game>> CreateUnrankedGame([FromBody] Game data)
   {
     try
     {
@@ -32,6 +32,8 @@ public class GamesController : ControllerBase
       }
 
 
+
+
       Map map = _ms.GenerateMap(data.MapName, data.Id);
 
       data.Map = map;
@@ -39,6 +41,7 @@ public class GamesController : ControllerBase
       Game game = _gs.CreateGame(data, userInfo);
 
       Player player = new Player();
+      player.Faction = data.Faction;
 
       _ps.JoinGame(player, game.Id, userInfo);
       game.PlayerCount++;

@@ -43,9 +43,9 @@ function Camera(wcCenter, wcWidth, viewportArray, bound) {
     this.setViewport(viewportArray, this.mViewportBound);
     this.mNearPlane = 0;
     this.mFarPlane = 1000;
-    
+
     this.kCameraZ = 10;  // This is for illumination computation
-    
+
     // transformation matrices
     this.mViewMatrix = mat4.create();
     this.mProjMatrix = mat4.create();
@@ -58,9 +58,9 @@ function Camera(wcCenter, wcWidth, viewportArray, bound) {
     // needed for computing transforms for shaders
     // updated each time in SetupViewProjection()
     this.mRenderCache = new PerRenderCache();
-        // SHOULD NOT be used except 
-        // xform operations during the rendering
-        // Client game should not access this!
+    // SHOULD NOT be used except 
+    // xform operations during the rendering
+    // Client game should not access this!
 }
 
 Camera.eViewport = Object.freeze({
@@ -82,7 +82,7 @@ Camera.prototype.getWCCenter = function () { return this.mCameraState.getCenter(
 Camera.prototype.setWCWidth = function (width) { this.mCameraState.setWidth(width); };
 Camera.prototype.getWCWidth = function () { return this.mCameraState.getWidth(); };
 Camera.prototype.getWCHeight = function () { return this.mCameraState.getWidth() * this.mViewport[Camera.eViewport.eHeight] / this.mViewport[Camera.eViewport.eWidth]; };
-                                                                                                        // viewportH/viewportW
+// viewportH/viewportW
 
 Camera.prototype.setViewport = function (viewportArray, bound) {
     if (bound === undefined) {
@@ -105,7 +105,7 @@ Camera.prototype.getViewport = function () {
     out[1] = this.mScissorBound[1];
     out[2] = this.mScissorBound[2];
     out[3] = this.mScissorBound[3];
-    return out; 
+    return out;
 };
 //</editor-fold>
 
@@ -126,14 +126,14 @@ Camera.prototype.setupViewProjection = function () {
     //<editor-fold desc="Step A: Set up and clear the Viewport">
     // Step A1: Set up the viewport: area on canvas to be drawn
     gl.viewport(this.mViewport[0],  // x position of bottom-left corner of the area to be drawn
-                this.mViewport[1],  // y position of bottom-left corner of the area to be drawn
-                this.mViewport[2],  // width of the area to be drawn
-                this.mViewport[3]); // height of the area to be drawn
+        this.mViewport[1],  // y position of bottom-left corner of the area to be drawn
+        this.mViewport[2],  // width of the area to be drawn
+        this.mViewport[3]); // height of the area to be drawn
     // Step A2: set up the corresponding scissor area to limit the clear area
     gl.scissor(this.mScissorBound[0], // x position of bottom-left corner of the area to be drawn
-               this.mScissorBound[1], // y position of bottom-left corner of the area to be drawn
-               this.mScissorBound[2], // width of the area to be drawn
-               this.mScissorBound[3]);// height of the area to be drawn
+        this.mScissorBound[1], // y position of bottom-left corner of the area to be drawn
+        this.mScissorBound[2], // width of the area to be drawn
+        this.mScissorBound[3]);// height of the area to be drawn
     // Step A3: set the color to be clear to black
     gl.clearColor(this.mBgColor[0], this.mBgColor[1], this.mBgColor[2], this.mBgColor[3]);  // set the color to be cleared
     // Step A4: enable the scissor area, clear, and then disable the scissor area
@@ -161,12 +161,12 @@ Camera.prototype.setupViewProjection = function () {
     var halfWCHeight = 0.5 * this.getWCHeight(); // 
     mat4.ortho(this.mProjMatrix,
         -halfWCWidth,   // distant to left of WC
-         halfWCWidth,   // distant to right of WC
+        halfWCWidth,   // distant to right of WC
         -halfWCHeight,  // distant to bottom of WC
-         halfWCHeight,  // distant to top of WC
-         this.mNearPlane,   // z-distant to near plane 
-         this.mFarPlane  // z-distant to far plane 
-        );
+        halfWCHeight,  // distant to top of WC
+        this.mNearPlane,   // z-distant to near plane 
+        this.mFarPlane  // z-distant to far plane 
+    );
 
     // Step B3: concatenate view and project matrices
     mat4.multiply(this.mVPMatrix, this.mProjMatrix, this.mViewMatrix);

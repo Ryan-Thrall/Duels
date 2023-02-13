@@ -26,6 +26,8 @@ function MyGame(gameData) {
   this.mCamera = null;
   this.mMap = null;
   this.mMapTiles = [];
+  this.mUnits = [];
+  this.mStructures = [];
 
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -45,21 +47,31 @@ MyGame.prototype.initialize = function () {
   this.mCamera = new Camera(
     vec2.fromValues(50, 36),
     100,
-    [0, 0, 640, 480]
+    [0, 0, 1366, 768]
   );
-  this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+  this.mCamera.setBackgroundColor([0.796, 0.796, 0.796, 1.0]);// [0.05, 0.02, 0.06, 1.0]
   this.mMap = this.gameData.terrainData.split("-");
   console.log(this.mMap)
 
 
-  this.initializeMap();
+  this.createHexMap();
+
+  this.mStructures.push(new LightRenderable(this.kSpriteSheet));
+  this.mStructures[0].getXform().setSize(8, 8);
+  this.mStructures[0].getXform().setPosition(35, 15.5);
+  this.mStructures[0].setElementPixelPositions(225, 257, 32, 64);
+
+  this.mUnits.push(new LightRenderable(this.kSpriteSheet));
+  this.mUnits[0].getXform().setSize(3, 3);
+  this.mUnits[0].getXform().setPosition(35, 15);
+  this.mUnits[0].setElementPixelPositions(192, 224, 32, 64);
 
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
 // importantly, make sure to _NOT_ change any state.
 MyGame.prototype.draw = function () {
-  gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]);
+  gEngine.Core.clearCanvas([0, 0, 0, 1.0]);
 
   this.mCamera.setupViewProjection();
 
@@ -67,7 +79,16 @@ MyGame.prototype.draw = function () {
     this.mMapTiles[tile].draw(this.mCamera);
   }
 
-  // this.mGrassTile.draw(this.mCamera.getVPMatrix());
+  for (struct in this.mStructures) {
+    this.mStructures[struct].draw(this.mCamera)
+  }
+
+  for (unit in this.mUnits) {
+    this.mUnits[unit].draw(this.mCamera)
+  }
+
+
+
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
@@ -77,39 +98,40 @@ MyGame.prototype.update = function () {
 };
 
 // Create a list of tiles in the map
-MyGame.prototype.initializeMap = function () {
+MyGame.prototype.createHexMap = function () {
   var x = 2.5;
   var y = 0;
   var r = 1;
   var pp = [];
   for (tile in this.mMap) {
     if (this.mMap[tile] == "l") {
-      pp = [0, 64, 64, 0]
+      pp = [0, 64, 164, 228]
     } else if (this.mMap[tile] == "w") {
-      pp = [64, 128, 64, 0]
+      pp = [64, 128, 164, 228]
     }
 
     this.mMapTiles.push(new LightRenderable(this.kSpriteSheet));
-    this.mMapTiles[tile].getXform().setSize(10, 10);
-    this.mMapTiles[tile].getXform().setPosition(x * 10 + 10, 60 - (y * 10));
+    this.mMapTiles[tile].getXform().setSize(9, 9);
+    this.mMapTiles[tile].getXform().setPosition(x * 8.8 + 12, 56.5 - (y * 10));
     this.mMapTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
     x += 1;
     if (x > 6 && r == 1 || x > 7 && r == 5) {
-      y += 0.75;
+      y += 0.68;
       x = 2;
       r++;
     } else if (x > 6 && r == 2 || x > 7 && r == 4) {
-      y += 0.75;
+      y += 0.68;
       x = 1.5;
       r++
     } else if (x > 7 && r == 3) {
-      y += 0.75;
+      y += 0.68;
       x = 1;
       r++;
     } else if (x > 6 && r == 6) {
-      y += 0.75;
+      y += 0.68;
       x = 2.5;
       r++;
     }
   }
 }
+
