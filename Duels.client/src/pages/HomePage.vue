@@ -43,17 +43,7 @@ export default {
       mapName: "hex",
       faction: "human"
     });
-    async function GetGames() {
-      try {
-        await gamesService.getGames();
-      }
-      catch (error) {
-        Pop.error(error, "[Getting Games]");
-      }
-    }
-    onMounted(() => {
-      GetGames();
-    });
+
     return {
       editable,
       games: computed(() => AppState.games),

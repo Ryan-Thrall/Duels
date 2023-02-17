@@ -50,6 +50,11 @@
 
         </form>
 
+        <div v-if="tab == 'join'">
+          <!-- <h1>{{ games }}</h1> -->
+          <GameLobbyItem v-for="g in games" :key="g.id" :game="g" />
+        </div>
+
       </div>
     </div>
   </div>
@@ -60,6 +65,8 @@
 import { ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { AppState } from '../AppState.js';
+import { onMounted } from 'vue';
+import GameLobbyItem from '../components/GameLobbyItem.vue'
 import { gamesService } from '../services/GamesService.js';
 import Pop from '../utils/Pop.js';
 export default {
@@ -71,6 +78,18 @@ export default {
     });
 
     AppState.tab = 'host'
+
+    async function GetGames() {
+      try {
+        await gamesService.getGames();
+      }
+      catch (error) {
+        Pop.error(error, "[Getting Games]");
+      }
+    }
+    onMounted(() => {
+      GetGames();
+    });
 
     return {
       editable,
@@ -94,7 +113,8 @@ export default {
         AppState.tab = tab;
       }
     }
-  }
+  },
+  components: { GameLobbyItem }
 }
 </script>
 

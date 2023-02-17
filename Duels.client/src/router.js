@@ -33,6 +33,12 @@ const routes = [
     component: loadPage('PlayPage'),
     beforeEnter: authGuard
   },
+  {
+    path: '/myGames',
+    name: 'MyGames',
+    component: loadPage('MyGamesPage'),
+    beforeEnter: authGuard
+  },
 ]
 
 export const router = createRouter({

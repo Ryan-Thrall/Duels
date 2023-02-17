@@ -2,7 +2,7 @@
   <div class="col-3">
 
     <div class="card bg-dark">
-      <h1 class="text-danger selectable" @click="deleteGame(game.id)">X</h1>
+      <h1 class="text-danger selectable" @click="deleteGame(game.id)" v-if="game.creatorId == account.id">X</h1>
       <router-link :to="{ name: 'Game', params: { gameId: game.id } }">
         <div class="card-body d-flex justify-content-around align-items-center">
           <h1 class="m-0">{{ game.title }}</h1>
@@ -10,9 +10,6 @@
           <h5>{{ game.status }}</h5>
         </div>
       </router-link>
-      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#joinGameModal"
-        @click="setActiveGame(game.id)">Join
-        Game</button>
     </div>
 
   </div>
@@ -20,6 +17,8 @@
 
 
 <script>
+import { AppState } from '../AppState.js';
+import { computed } from '@vue/reactivity';
 import { Game } from '../models/Game.js';
 import { gamesService } from '../services/GamesService.js';
 import Pop from '../utils/Pop.js';
@@ -33,6 +32,7 @@ export default {
   },
   setup(props) {
     return {
+      account: computed(() => AppState.account),
 
       async deleteGame(id) {
         try {
