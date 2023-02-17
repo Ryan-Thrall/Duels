@@ -14,5 +14,9 @@ export const AppState = reactive({
 
   players: [],
 
+  tab: null,
+
+  faction: null,
+
   webGLInitialized: false,
 })

@@ -43,8 +43,6 @@ public class MapsServ
   {
     List<Player> players = _ps.GetPlayersByGame(map.GameId);
 
-    Console.WriteLine(players.Count);
-
     // Split the terrain data into a list
     string[] terrainData = map.TerrainData.Split('-');
 
@@ -63,7 +61,7 @@ public class MapsServ
       if (tile.Length >= 2)
       {
         playerInt = tile[1] - '1';
-        Console.WriteLine(playerInt);
+
 
         if (players[playerInt].Faction == "human")
         {
@@ -80,7 +78,7 @@ public class MapsServ
           structure = "f";
           troop = "g";
         }
-        Console.WriteLine(tile[1]);
+
         structureData[c] = tile[1] + structure;
         troopData[c] = tile[1] + troop;
       }

@@ -1,22 +1,29 @@
 <template>
-  <div class="row d-flex justify-content-center">
-    <div class="col-11 card mb-4">
+  <div class="row bottomify">
+
+    <div
+      class="col-1 me-4 d-flex justify-content-center align-items-center bg-hyellow text-center rounded-top tab first-tab"
+      :class="tab == 'join' ? 'selected' : 'fw-bold selectable'" @click="swapTab('join')">
+      Join
+    </div>
+    <div class="col-1 d-flex justify-content-center align-items-center bg-hyellow text-center rounded-top tab"
+      :class="tab == 'host' ? 'selected' : 'fw-bold selectable'" @click="swapTab('host')">
+      Host
+    </div>
+
+
+
+    <!-- Content Card -->
+    <div class="col-11 card bg-hyellow content-card mb-5 ">
       <div class="card-body">
-        <div class="d-flex justify-content-center">
-          <h1>Host a Game</h1>
-        </div>
+        <form class="form" @submit.prevent="createGame" v-if="tab == 'host'">
 
+          <div class="mb-3 d-flex flex-column align-items-center">
 
-        <form class="form" @submit.prevent="createGame">
-          <div class="form-floating mb-3">
-            <input v-model="editable.title" type="text" class="form-control" id="floatingInput" placeholder="Title">
-            <label for="floatingInput">Lobby Name</label>
-          </div>
+            <label for="floatingPlayers" class="me-2 fw-bolder fs-3">{{ editable.playerLimit }} Players</label>
+            <input v-model="editable.playerLimit" type="range" class="slider" id="floatingPlayers"
+              placeholder="# of Players" max="6" min="2">
 
-          <div class="mb-3 d-flex align-items-center">
-            <label for="floatingPlayers" class="me-2">{{ editable.playerLimit }} Players</label>
-            <input v-model="editable.playerLimit" type="range" class="" id="floatingPlayers" placeholder="# of Players"
-              max="6" min="2">
 
           </div>
 
@@ -34,12 +41,6 @@
           <div>
             <select v-model="editable.mapName" name="map" id="Map" required>
               <option value="hex" selected>Hex</option>
-            </select>
-
-            <select v-model="editable.faction" name="map" id="Map" required>
-              <option value="human" selected>Humans</option>
-              <option value="undead">Undead</option>
-              <option value="robot">Robots</option>
             </select>
           </div>
 
@@ -68,18 +69,29 @@ export default {
       mapName: "hex",
       faction: "human"
     });
+
+    AppState.tab = 'host'
+
     return {
       editable,
       games: computed(() => AppState.games),
       myGames: computed(() => AppState.myGames),
+      faction: computed(() => AppState.faction),
+      tab: computed(() => AppState.tab),
 
       async createGame() {
         try {
+          editable.faction = faction;
           await gamesService.createGame(editable.value);
+          Pop.success("Your game has been created")
         }
         catch (error) {
           Pop.error(error, "[Creating a Game]");
         }
+      },
+
+      async swapTab(tab) {
+        AppState.tab = tab;
       }
     }
   }
@@ -88,5 +100,40 @@ export default {
 
 
 <style lang="scss" scoped>
+.bottomify {
+  position: absolute;
+  // min-height: 60%;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  bottom: 1rem;
+}
 
+.selected {
+  font-size: 1.2em;
+  font-weight: bolder;
+  border: 2px solid black;
+  border-bottom: 0px;
+  transform: scale(1.2)
+}
+
+.tab {
+  max-height: 2rem;
+}
+
+.first-tab {
+  margin-left: 8rem;
+}
+
+.content-card {
+  height: 25rem;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.slider {
+  // -webkit-appearance: none;
+  width: 100%;
+  height: 1rem;
+}
 </style>

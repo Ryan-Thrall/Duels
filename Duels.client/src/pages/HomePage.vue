@@ -7,9 +7,14 @@
           <p>Coming Soon</p>
         </div>
       </div>
-      <div class="col-4 bg-hyellow d-flex justify-content-center align-items-center selectable">
-        <h1 class="text-hdark text-shadow-white">Unranked</h1>
-      </div>
+
+      <router-link class="col-4 bg-hyellow d-flex justify-content-center align-items-center selectable"
+        :to="{ name: 'Play', params: { modeId: 'unranked' } }">
+        <div>
+          <h1 class="text-hdark text-shadow-white">Unranked</h1>
+        </div>
+      </router-link>
+
       <div class="col-4 bg-hred d-flex justify-content-center align-items-center darken-90">
         <div class="d-flex flex-column align-items-center">
           <h1 class="text-hsilver text-shadow">Ranked</h1>

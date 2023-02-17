@@ -27,6 +27,12 @@ const routes = [
     name: 'Game',
     component: loadPage('GamePage'),
   },
+  {
+    path: '/play/:modeId',
+    name: 'Play',
+    component: loadPage('PlayPage'),
+    beforeEnter: authGuard
+  },
 ]
 
 export const router = createRouter({
