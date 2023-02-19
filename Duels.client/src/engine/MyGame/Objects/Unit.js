@@ -7,7 +7,7 @@ function Unit(spriteTexture, normalMap, atX, atY) {
   this.mBuilder.setColor([1, 1, 1, 0]);
   this.mBuilder.getXform().setPosition(atX, atY);
   this.mBuilder.getXform().setSize(3, 3);
-  this.mBuilder.setElementPixelPositions(0, 35, 132, 164);
+  this.mBuilder.setElementPixelPositions(0, 32, 98, 130);
   GameObject.call(this, this.mBuilder);
 }
 gEngine.Core.inheritPrototype(Unit, GameObject);

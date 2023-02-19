@@ -131,9 +131,8 @@ MyGame.prototype.update = function () {
     if (this.mCamera.isMouseInViewport()) {
       // console.log(this.mCamera.mouseWCX())
       let index = this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
-      console.log(index)
       if (index != null) {
-        this.mUnits[index].getXform().setSize(4, 4);
+        this.mUnits[index].getXform().setSize(3.5, 3.5);
       }
     }
   };
@@ -146,9 +145,9 @@ MyGame.prototype.createHexMap = function () {
   var pp = [];
   for (tile in this.mMap) {
     if (this.mMap[tile] == "l") {
-      pp = [0, 64, 164, 228]
+      pp = [0, 55, 0, 64]
     } else if (this.mMap[tile] == "w") {
-      pp = [64, 128, 164, 228]
+      pp = [56, 111, 0, 64]
     }
 
     this.mMapTiles.push(new LightRenderable(this.kSpriteSheet));
@@ -159,12 +158,12 @@ MyGame.prototype.createHexMap = function () {
     if (this.mStructs[tile].substr(1) == "th") {
       this.mStructures.push(new LightRenderable(this.kSpriteSheet));
       this.mStructures[this.mStructures.length - 1].getXform().setSize(7, 7);
-      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 12, 57 - (y * 10));
-      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(0, 35, 67, 99);
+      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 12, 57.35 - (y * 10));
+      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(0, 32, 132, 164);
     }
 
     if (this.mTroops[tile].substr(1) == "b") {
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 12.25, 56.6 - (y * 10)));
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 12, 57.2 - (y * 10)));
       // this.mUnits[this.mUnits.length - 1].getXform().setSize(3, 3);
       // this.mUnits[this.mUnits.length - 1].getXform().setPosition(x * 8.8 + 12.25, 56.6 - (y * 10));
       // this.mUnits[this.mUnits.length - 1].setElementPixelPositions(0, 35, 132, 164);
