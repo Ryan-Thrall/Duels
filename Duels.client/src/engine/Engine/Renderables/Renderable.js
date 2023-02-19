@@ -16,6 +16,7 @@ function Renderable() {
     this.mXform = new Transform(); // transform that moves this object around
     this.mColor = [1, 1, 1, 1];    // color of pixel
 }
+// gEngine.Core.inheritPrototype(Renderable, GameObject);
 
 //<editor-fold desc="Public Methods">
 //**-----------------------------------------
@@ -28,7 +29,7 @@ Renderable.prototype.draw = function (aCamera) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
 
-Renderable.prototype.update = function () {};
+Renderable.prototype.update = function () { };
 
 Renderable.prototype.getXform = function () { return this.mXform; };
 Renderable.prototype.setColor = function (color) { this.mColor = color; };

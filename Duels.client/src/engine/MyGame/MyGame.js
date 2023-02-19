@@ -31,6 +31,8 @@ function MyGame(gameData) {
   this.mUnits = [];
   this.mStructures = [];
 
+  this.selectBox = null;
+
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -57,6 +59,10 @@ MyGame.prototype.initialize = function () {
   this.mStructs = this.gameData.structureData.split("-");
   this.mTroops = this.gameData.troopData.split("-");
 
+  this.selectBox = new MouseSelect(this.kSpriteSheet, null, 15, 15);
+
+
+
 
   this.createHexMap();
 
@@ -75,7 +81,7 @@ MyGame.prototype.initialize = function () {
 // This is the draw function, make sure to setup proper drawing environment, and more
 // importantly, make sure to _NOT_ change any state.
 MyGame.prototype.draw = function () {
-  gEngine.Core.clearCanvas([0, 0, 0, 1.0]);
+  gEngine.Core.clearCanvas([0.796, 0.796, 0.796, 1.0]);
 
   this.mCamera.setupViewProjection();
 
@@ -91,6 +97,7 @@ MyGame.prototype.draw = function () {
     this.mUnits[unit].draw(this.mCamera)
   }
 
+  this.selectBox.draw(this.mCamera)
 
 
 };
@@ -98,9 +105,39 @@ MyGame.prototype.draw = function () {
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
+  let cameraPos = this.mCamera.getViewport();
+  // console.log(cameraPos)
 
-};
 
+  // Camera Controls
+  if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)) {
+    cameraPos[1] -= 5;
+    this.mCamera.setViewport(cameraPos);
+  }
+  if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
+    cameraPos[0] += 5;
+    this.mCamera.setViewport(cameraPos);
+  }
+  if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S)) {
+    cameraPos[1] += 5;
+    this.mCamera.setViewport(cameraPos);
+  }
+  if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
+    cameraPos[0] -= 5;
+    this.mCamera.setViewport(cameraPos);
+  }
+
+  if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
+    if (this.mCamera.isMouseInViewport()) {
+      // console.log(this.mCamera.mouseWCX())
+      let index = this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
+      console.log(index)
+      if (index != null) {
+        this.mUnits[index].getXform().setSize(4, 4);
+      }
+    }
+  };
+}
 // Create a list of tiles in the map
 MyGame.prototype.createHexMap = function () {
   var x = 2.5;
@@ -127,10 +164,10 @@ MyGame.prototype.createHexMap = function () {
     }
 
     if (this.mTroops[tile].substr(1) == "b") {
-      this.mUnits.push(new LightRenderable(this.kSpriteSheet));
-      this.mUnits[this.mUnits.length - 1].getXform().setSize(3, 3);
-      this.mUnits[this.mUnits.length - 1].getXform().setPosition(x * 8.8 + 12.25, 56.6 - (y * 10));
-      this.mUnits[this.mUnits.length - 1].setElementPixelPositions(0, 35, 132, 164);
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 12.25, 56.6 - (y * 10)));
+      // this.mUnits[this.mUnits.length - 1].getXform().setSize(3, 3);
+      // this.mUnits[this.mUnits.length - 1].getXform().setPosition(x * 8.8 + 12.25, 56.6 - (y * 10));
+      // this.mUnits[this.mUnits.length - 1].setElementPixelPositions(0, 35, 132, 164);
     }
 
     x += 1;
@@ -159,3 +196,19 @@ MyGame.prototype.createHexMap = function () {
   }
 }
 
+MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
+  // console.log(mouseX, mouseY)
+  let h = []
+  this.selectBox.getXform().setPosition(mouseX, mouseY)
+
+  for (let i = 0; i < this.mUnits.length; i++) {
+    if (this.selectBox.pixelTouches(this.mUnits[i], h)) {
+      return i;
+    }
+  }
+
+  return null;
+
+  // console.log(this.selectBox.pixelTouches(this.mUnits[1], h))
+  // this.mUnits[0].pixelTouches(mouseX, mouseY)
+}
