@@ -79,7 +79,9 @@ Camera.prototype.setWCCenter = function (xPos, yPos) {
 };
 Camera.prototype.getPosInPixelSpace = function () { return this.mRenderCache.mCameraPosInPixelSpace; };
 Camera.prototype.getWCCenter = function () { return this.mCameraState.getCenter(); };
-Camera.prototype.setWCWidth = function (width) { this.mCameraState.setWidth(width); };
+Camera.prototype.setWCWidth = function (width) {
+    this.mCameraState.setWidth(width);
+};
 Camera.prototype.getWCWidth = function () { return this.mCameraState.getWidth(); };
 Camera.prototype.getWCHeight = function () { return this.mCameraState.getWidth() * this.mViewport[Camera.eViewport.eHeight] / this.mViewport[Camera.eViewport.eWidth]; };
 // viewportH/viewportW

@@ -5,6 +5,7 @@
   <div>
     <canvas id="gameCanvas" width="1366" height="768"></canvas>
   </div>
+  <!-- <h4>{{ game }}</h4> -->
 </template>
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="row bottomify">
-
+    <h1>{{ faction }}</h1>
     <div
       class="col-1 me-4 d-flex justify-content-center align-items-center bg-hyellow text-center rounded-top tab first-tab"
       :class="tab == 'join' ? 'selected' : 'fw-bold selectable'" @click="swapTab('join')">
@@ -16,7 +16,7 @@
     <!-- Content Card -->
     <div class="col-11 card bg-hyellow content-card mb-5 ">
       <div class="card-body">
-        <form class="form" @submit.prevent="createGame" v-if="tab == 'host'">
+        <form class="form" @submit.prevent="createGame(faction)" v-if="tab == 'host'">
 
           <div class="mb-3 d-flex flex-column align-items-center">
 
@@ -98,9 +98,12 @@ export default {
       faction: computed(() => AppState.faction),
       tab: computed(() => AppState.tab),
 
-      async createGame() {
+      async createGame(faction) {
+        console.log(faction)
         try {
           editable.faction = faction;
+
+          console.log(editable)
           await gamesService.createGame(editable.value);
           Pop.success("Your game has been created")
         }

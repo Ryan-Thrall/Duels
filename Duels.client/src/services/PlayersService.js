@@ -5,6 +5,7 @@ import { Game } from "../models/Game.js";
 
 class PlayersService {
   async joinGame(data, gameId) {
+    console.log(data)
     const res = await api.post(`api/players/${gameId}`, data)
 
     AppState.activeGame.playerCount++;

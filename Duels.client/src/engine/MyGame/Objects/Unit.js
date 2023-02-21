@@ -1,23 +1,15 @@
-function Unit(spriteTexture, normalMap, atX, atY) {
+function Unit(spriteTexture, normalMap, atX, atY, ppX, coX, coY) {
   if (normalMap !== null) {
-    this.mBuilder = new IllumRenderable(spriteTexture, normalMap);
+    this.unit = new IllumRenderable(spriteTexture, normalMap);
   } else {
-    this.mBuilder = new LightRenderable(spriteTexture);
+    this.unit = new LightRenderable(spriteTexture);
   }
-  this.mBuilder.setColor([1, 1, 1, 0]);
-  this.mBuilder.getXform().setPosition(atX, atY);
-  this.mBuilder.getXform().setSize(3.5, 3.5);
-  this.mBuilder.setElementPixelPositions(0, 32, 98, 130);
-  GameObject.call(this, this.mBuilder);
+  this.unit.setColor([1, 1, 1, 0]);
+  this.unit.getXform().setPosition(atX, atY);
+  this.unit.getXform().setSize(3.5, 3.5);
+  this.unit.setElementPixelPositions(ppX, ppX + 32, 65, 97);
+  this.unit.coX = coX;
+  this.unit.coY = coY;
+  GameObject.call(this, this.unit);
 }
 gEngine.Core.inheritPrototype(Unit, GameObject);
-
-Unit.prototype.update = function () {
-  if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
-    if (this.mCamera.isMouseInViewport()) {
-      console.log("Hello")
-      this.mBuilder.getXform().setSize(4, 4);
-    }
-
-  }
-}
