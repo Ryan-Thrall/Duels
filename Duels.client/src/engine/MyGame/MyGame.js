@@ -130,9 +130,12 @@ MyGame.prototype.update = function () {
   if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
     if (this.mCamera.isMouseInViewport()) {
       // console.log(this.mCamera.mouseWCX())
+      this.mUnits.forEach(u => {
+        u.getXform().setSize(3.5, 3.5)
+      })
       let index = this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
       if (index != null) {
-        this.mUnits[index].getXform().setSize(3.5, 3.5);
+        this.mUnits[index].getXform().setSize(4, 4);
       }
     }
   };
@@ -157,13 +160,13 @@ MyGame.prototype.createHexMap = function () {
 
     if (this.mStructs[tile].substr(1) == "th") {
       this.mStructures.push(new LightRenderable(this.kSpriteSheet));
-      this.mStructures[this.mStructures.length - 1].getXform().setSize(7, 7);
-      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 12, 57.35 - (y * 10));
-      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(0, 32, 132, 164);
+      this.mStructures[this.mStructures.length - 1].getXform().setSize(8, 8);
+      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 12, 56.5 - (y * 10));
+      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(0, 32, 131, 163);
     }
 
     if (this.mTroops[tile].substr(1) == "b") {
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 12, 57.2 - (y * 10)));
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 12, 56.5 - (y * 10)));
       // this.mUnits[this.mUnits.length - 1].getXform().setSize(3, 3);
       // this.mUnits[this.mUnits.length - 1].getXform().setPosition(x * 8.8 + 12.25, 56.6 - (y * 10));
       // this.mUnits[this.mUnits.length - 1].setElementPixelPositions(0, 35, 132, 164);
