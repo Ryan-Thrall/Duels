@@ -20,7 +20,7 @@ public class MapsServ
       case "hex":
         map.Size = 64;
         map.TerrainData =
-        "b-b-l-l-l-l1-b-b-b-l-l-l-l-l-b-b-b-l-l-l-l-l-l-b-l-l-l-l-l-l-l-b-b-l-l-l-l-l-l-b-b-l-l-l-l-l-b-b-b-b-l2-l-l-l-b-b-b-b-b-b-b-b-b-b";
+        "w-w-l-l-l-l-l-l1-w-h-h-f-f-l-l-l-l-h-h-w-w-f-l-l-l-h-w-h-w-f-l-l-l-l-f-w-h-w-h-l-l-l-f-w-w-h-h-l-l-l-l-f-f-h-h-w-l2-l-l-l-l-l-w-w";
         map.SpellData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
         map.TroopData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
         map.StructureData = "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0";
@@ -66,13 +66,13 @@ public class MapsServ
 
         if (players[playerInt].Faction == "human")
         {
-          structure = "th";
+          structure = "hb";
           troop = "b";
         }
         else if (players[playerInt].Faction == "undead")
         {
           structure = "0";
-          troop = "i";
+          troop = "s";
         }
         else if (players[playerInt].Faction == "robot")
         {

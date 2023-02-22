@@ -206,10 +206,12 @@ MyGame.prototype.createHexMap = function () {
     } else if (this.mMapData[tile][0] == "w") {
       pp = [56, 111, 0, 64]
       terrain = "w"
-    }
-    if (this.mMapData[tile][0] == "b") {
-      pp = [56, 111, 0, 64]
-      terrain = "b"
+    } else if (this.mMapData[tile][0] == "h") {
+      pp = [112, 167, 0, 64]
+      terrain = "h"
+    } else if (this.mMapData[tile][0] == "f") {
+      pp = [168, 223, 0, 64]
+      terrain = "f"
     }
 
     // Create the new tile
@@ -226,7 +228,7 @@ MyGame.prototype.createHexMap = function () {
     }
 
     // Add a townhall structure if on this tile
-    if (this.mStructData[tile].substr(1) == "th") {
+    if (this.mStructData[tile].substr(1) == "hb") {
       this.mStructures.push(new LightRenderable(this.kSpriteSheet));
       this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
       this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
