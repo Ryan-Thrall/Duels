@@ -47,7 +47,7 @@ function MyGame(gameData) {
   this.mMoveTokens = [];
 
   // The Variable for the selected unit or structure, and the tile
-  this.mSelected = null;
+  this.mUnitIndex = null;
   this.mTile = null
 
   // A tiny sprite used to check for collisions with mouse clicks
@@ -172,17 +172,9 @@ MyGame.prototype.update = function () {
     if (this.mCamera.isMouseInViewport()) {
       // console.log(this.mCamera.mouseWCX())
       this.mUnits.forEach(u => {
-        u.getXform().setSize(3.5, 3.5)
-        this.mMoveTokens = [];
+        u.getXform().setSize(5, 5)
       })
-      let index = this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
-      if (index != null) {
-        this.mSelected = this.mUnits[index];
-        this.mSelected.getXform().setSize(4, 4);
-        console.log(this.mUnits[index].unit.coX)
-        this.findAdjacentTiles(this.mSelected.unit.coX, this.mSelected.unit.coY);
-        // this.mMoveTokens.push(new MoveToken(this.kSpriteSheet, null, 25, 20))
-      }
+      this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
     }
   };
 }
@@ -191,6 +183,9 @@ MyGame.prototype.createHexMap = function () {
   // Grid Coordinates
   var coX = 0;
   var coY = 0;
+
+  // Terrain type
+  var terrain = "";
 
   // Drawing Coordinates
   var x = 0;
@@ -206,16 +201,19 @@ MyGame.prototype.createHexMap = function () {
   // Set pixel position based off terrain type
   for (tile in this.mMapData) {
     if (this.mMapData[tile][0] == "l") {
-      pp = [0, 55, 0, 64]
+      pp = [0, 55, 0, 64];
+      terrain = "p"
     } else if (this.mMapData[tile][0] == "w") {
       pp = [56, 111, 0, 64]
+      terrain = "w"
     }
     if (this.mMapData[tile][0] == "b") {
       pp = [56, 111, 0, 64]
+      terrain = "b"
     }
 
     // Create the new tile
-    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY));
+    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, terrain));
     // this.mTiles[tile].getXform().setSize(9, 9);
     // this.mTiles[tile].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
     // this.mTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
@@ -230,7 +228,7 @@ MyGame.prototype.createHexMap = function () {
     // Add a townhall structure if on this tile
     if (this.mStructData[tile].substr(1) == "th") {
       this.mStructures.push(new LightRenderable(this.kSpriteSheet));
-      this.mStructures[this.mStructures.length - 1].getXform().setSize(8, 8);
+      this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
       this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
       this.mStructures[this.mStructures.length - 1].setElementPixelPositions(ppX, ppX + 32, 131, 163);
     }
@@ -288,9 +286,22 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
 
   for (let i = 0; i < this.mUnits.length; i++) {
     if (this.selectBox.pixelTouches(this.mUnits[i], h)) {
-      return i;
+      this.mUnitIndex = i;
+      this.mUnits[i].selectUnit();
+      this.findAdjacentTiles(this.mUnits[i].unit.coX, this.mUnits[i].unit.coY)
+      return;
     }
   }
+
+  for (let i = 0; i < this.mMoveTokens.length; i++) {
+    if (this.selectBox.pixelTouches(this.mMoveTokens[i], h)) {
+      this.moveUnit(this.mMoveTokens[i], this.mUnitIndex)
+      return;
+    }
+  }
+
+  this.mMoveTokens = []
+  this.mUnitIndex = null;
 
   return null;
 
@@ -298,12 +309,19 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
   // this.mUnits[0].pixelTouches(mouseX, mouseY)
 }
 
+MyGame.prototype.moveUnit = function (moveToken, i) {
+  this.mUnits[i].updateCoords(moveToken.token.coX, moveToken.token.coY)
+  // this.mUnits[i].unit.coY = moveToken.token.coY;
+  this.mUnits[i].getXform().setPosition(moveToken.getXform().getPosition()[0], moveToken.getXform().getPosition()[1]);
+  this.mMoveTokens = [];
+}
+
 MyGame.prototype.findAdjacentTiles = function (coX, coY) {
   this.mTiles.forEach(tile => {
     let y = tile.tile.coY;
     let x = tile.tile.coX;
-    if (this.checkAdjacent(x, y, coX, coY)) {
-      this.mMoveTokens.push(new MoveToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1]))
+    if (this.checkAdjacent(x, y, coX, coY) && tile.tile.terrain != "b") {
+      this.mMoveTokens.push(new MoveToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y))
       // console.log(tile.getXform().getPosition()[0])
     }
   })
@@ -312,18 +330,39 @@ MyGame.prototype.findAdjacentTiles = function (coX, coY) {
 }
 
 MyGame.prototype.checkAdjacent = function (x, y, coX, coY) {
-  if (x == coX - 1 && y == coY - 1) {
-    return true;
-  } else if (x == coX && y == coY - 1) {
-    return true;
-  } else if (x == coX + 1 && y == coY) {
-    return true;
-  } else if (x == coX && y == coY + 1) {
-    return true;
-  } else if (x == coX - 1 && y == coY + 1) {
-    return true;
-  } else if (x == coX - 1 && y == coY) {
-    return true;
+  // Sideways Movement
+  if (y == coY) {
+    if (x == coX - 1 || x == coX + 1) {
+      return true;
+    }
   }
+
+  // Down Movement
+  else if (y == coY + 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+  // Up Movement
+  else if (y == coY - 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+
   return false;
 }

@@ -1,6 +1,6 @@
 
 
-function Tile(spriteTexture, normalMap, atX, atY, pp, coX, coY) {
+function Tile(spriteTexture, normalMap, atX, atY, pp, coX, coY, terrain) {
   if (normalMap !== null) {
     this.tile = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -12,6 +12,7 @@ function Tile(spriteTexture, normalMap, atX, atY, pp, coX, coY) {
   this.tile.setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
   this.tile.coX = coX;
   this.tile.coY = coY;
+  this.tile.terrain = terrain;
   GameObject.call(this, this.tile);
 }
 gEngine.Core.inheritPrototype(Tile, GameObject)
