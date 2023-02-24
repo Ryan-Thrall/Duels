@@ -26,6 +26,7 @@ function MyGame(gameData) {
   // The Spritesheet
   this.kSpriteSheet = "src/assets/img/SpriteSheet.png";
 
+
   // The main Camera
   this.mCamera = null;
 
@@ -36,12 +37,21 @@ function MyGame(gameData) {
 
   // The Arrays to Hold the Objects made from the data
   this.mTiles = [];
-  this.tile = null;
+  // this.tile = null;
 
   this.mUnits = [];
   this.unit = null;
 
   this.mStructures = [];
+  this.structure = null;
+
+  this.mGoldAmounts = [0, 0];
+
+  this.mRedCoin = null;
+  this.mRedText = null;
+
+  this.mBlueCoin = null;
+  this.mBlueText = null;
 
   // Holds the Move Token Objects
   this.mMoveTokens = [];
@@ -86,7 +96,25 @@ MyGame.prototype.initialize = function () {
 
   this.selectBox = new MouseSelect(this.kSpriteSheet, null, 15, 15);
 
+  this.mRedCoin = new LightRenderable(this.kSpriteSheet);
+  this.mRedCoin.getXform().setSize(4, 4);
+  this.mRedCoin.getXform().setPosition(-10, 68);
+  this.mRedCoin.setElementPixelPositions(313, 345, 0, 32);
 
+  this.mRedText = new FontRenderable("x " + this.mGoldAmounts[0]);
+  this.mRedText.setColor([0, 0, 0, 1]);
+  this.mRedText.getXform().setPosition(-6, 68);
+  this.mRedText.setTextHeight(3);
+
+  this.mBlueCoin = new LightRenderable(this.kSpriteSheet);
+  this.mBlueCoin.getXform().setSize(4, 4);
+  this.mBlueCoin.getXform().setPosition(-10, 63);
+  this.mBlueCoin.setElementPixelPositions(346, 378, 0, 32);
+
+  this.mBlueText = new FontRenderable("x " + this.mGoldAmounts[1]);
+  this.mBlueText.setColor([0, 0, 0, 1]);
+  this.mBlueText.getXform().setPosition(-6, 63);
+  this.mBlueText.setTextHeight(3);
 
 
   this.createHexMap();
@@ -128,6 +156,12 @@ MyGame.prototype.draw = function () {
 
   this.selectBox.draw(this.mCamera)
 
+  this.mRedCoin.draw(this.mCamera);
+  this.mRedText.draw(this.mCamera);
+
+  this.mBlueCoin.draw(this.mCamera);
+  this.mBlueText.draw(this.mCamera);
+
 
 };
 
@@ -137,6 +171,7 @@ MyGame.prototype.update = function () {
   let cameraPos = this.mCamera.getViewport();
   // console.log(cameraPos)
 
+  let viewport;
 
   // Camera Controls
   if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)) {
@@ -155,6 +190,9 @@ MyGame.prototype.update = function () {
     cameraPos[0] -= 5;
     this.mCamera.setViewport(cameraPos);
   }
+
+  // console.log(this.mCamera.getViewport())
+
   // FIXME Figure out this stupid zoom system and why WCWidth Will never update even when told to update
   // if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Q)) {
   //   // console.log("zooom")
@@ -177,6 +215,8 @@ MyGame.prototype.update = function () {
       this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
     }
   };
+
+  this.mCamera.clampAtBoundary(this.mRedCoin.getXform(), 0.9);
 }
 // Create a list of tiles in the map
 MyGame.prototype.createHexMap = function () {
@@ -196,7 +236,6 @@ MyGame.prototype.createHexMap = function () {
 
   // Pixel position variables
   var pp = [];
-  var ppX = 0;
 
   // Set pixel position based off terrain type
   for (tile in this.mMapData) {
@@ -216,28 +255,30 @@ MyGame.prototype.createHexMap = function () {
 
     // Create the new tile
     this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, terrain));
-    // this.mTiles[tile].getXform().setSize(9, 9);
-    // this.mTiles[tile].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
-    // this.mTiles[tile].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
 
     // Select the row of the spritesheet based off player color
     if (this.mStructData[tile].substr(0, 1) == "1") {
-      ppX = 0;
+      pp = [0, 32, 0, 0];
     } else if (this.mStructData[tile].substr(0, 1) == "2") {
-      ppX = 33;
+      pp = [33, 65, 0, 0];
     }
 
     // Add a townhall structure if on this tile
     if (this.mStructData[tile].substr(1) == "hb") {
+      pp[2] = 65;
+      pp[3] = 97;
+
       this.mStructures.push(new LightRenderable(this.kSpriteSheet));
       this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
       this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
-      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(ppX, ppX + 32, 131, 163);
+      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
     }
 
     // Add a unit if on this tile
-    if (this.mUnitData[tile].substr(1) == "b") {
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), ppX, coX, coY));
+    if (this.mUnitData[tile].substr(1) == "hs") {
+      pp[2] = 131;
+      pp[3] = 163;
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY));
     }
 
     // Move the tile over one
@@ -255,29 +296,6 @@ MyGame.prototype.createHexMap = function () {
         x = 0;
       }
     }
-
-    // if (x > 6 && r == 1 || x > 7 && r == 5) {
-    //   y += 0.68;
-    //   x = 2;
-    //   r++;
-    // } else if (x > 6 && r == 2 || x > 7 && r == 4) {
-    //   y += 0.68;
-    //   x = 1.5;
-    //   r++
-    // } else if (x > 7 && r == 3) {
-    //   y += 0.68;
-    //   x = 1;
-    //   r++;
-    // } else if (x > 6 && r == 6) {
-    //   y += 0.68;
-    //   x = 2.5;
-    //   r++;
-    // }
-
-
-
-
-
   }
 }
 
@@ -290,7 +308,8 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
     if (this.selectBox.pixelTouches(this.mUnits[i], h)) {
       this.mUnitIndex = i;
       this.mUnits[i].selectUnit();
-      this.findAdjacentTiles(this.mUnits[i].unit.coX, this.mUnits[i].unit.coY)
+      this.mMoveTokens = [];
+      this.findAdjacentTiles(this.mUnits[i].coX, this.mUnits[i].coY)
       return;
     }
   }
@@ -312,17 +331,16 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
 }
 
 MyGame.prototype.moveUnit = function (moveToken, i) {
-  this.mUnits[i].updateCoords(moveToken.token.coX, moveToken.token.coY)
-  // this.mUnits[i].unit.coY = moveToken.token.coY;
+  this.mUnits[i].updateCoords(moveToken.coX, moveToken.coY)
   this.mUnits[i].getXform().setPosition(moveToken.getXform().getPosition()[0], moveToken.getXform().getPosition()[1]);
   this.mMoveTokens = [];
 }
 
 MyGame.prototype.findAdjacentTiles = function (coX, coY) {
   this.mTiles.forEach(tile => {
-    let y = tile.tile.coY;
-    let x = tile.tile.coX;
-    if (this.checkAdjacent(x, y, coX, coY) && tile.tile.terrain != "b") {
+    let y = tile.coY;
+    let x = tile.coX;
+    if (this.checkAdjacent(x, y, coX, coY) && tile.terrain != "b") {
       this.mMoveTokens.push(new MoveToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y))
       // console.log(tile.getXform().getPosition()[0])
     }

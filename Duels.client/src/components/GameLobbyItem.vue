@@ -1,7 +1,7 @@
 <template>
   <div class="bordered d-flex justify-content-between">
     <h4>{{ game.creator.name }}'s Game</h4>
-    <button class="btn btn-success" @click="joinGame(faction, game.id)">Join</button>
+    <button v-if="faction" class="btn btn-success" @click="joinGame(faction, game.id)">Join</button>
   </div>
 
 </template>

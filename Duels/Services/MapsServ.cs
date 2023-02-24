@@ -67,17 +67,17 @@ public class MapsServ
         if (players[playerInt].Faction == "human")
         {
           structure = "hb";
-          troop = "b";
+          troop = "hs";
         }
         else if (players[playerInt].Faction == "undead")
         {
           structure = "0";
-          troop = "s";
+          troop = "us";
         }
         else if (players[playerInt].Faction == "robot")
         {
           structure = "f";
-          troop = "g";
+          troop = "rg";
         }
 
         structureData[c] = tile[1] + structure;

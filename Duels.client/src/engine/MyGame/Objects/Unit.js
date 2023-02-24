@@ -1,4 +1,4 @@
-function Unit(spriteTexture, normalMap, atX, atY, ppX, coX, coY) {
+function Unit(spriteTexture, normalMap, atX, atY, pp, coX, coY) {
   if (normalMap !== null) {
     this.unit = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -7,9 +7,9 @@ function Unit(spriteTexture, normalMap, atX, atY, ppX, coX, coY) {
   this.unit.setColor([1, 1, 1, 0]);
   this.unit.getXform().setPosition(atX, atY);
   this.unit.getXform().setSize(5, 5);
-  this.unit.setElementPixelPositions(ppX, ppX + 32, 65, 97);
-  this.unit.coX = coX;
-  this.unit.coY = coY;
+  this.unit.setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);//65 97
+  this.coX = coX;
+  this.coY = coY;
   GameObject.call(this, this.unit);
 }
 gEngine.Core.inheritPrototype(Unit, GameObject);
@@ -19,6 +19,6 @@ Unit.prototype.selectUnit = function () {
 }
 
 Unit.prototype.updateCoords = function (coX, coY) {
-  this.unit.coX = coX;
-  this.unit.coY = coY;
+  this.coX = coX;
+  this.coY = coY;
 }

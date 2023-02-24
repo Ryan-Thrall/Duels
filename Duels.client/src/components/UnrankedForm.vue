@@ -45,7 +45,7 @@
           </div>
 
           <div class="mt-2">
-            <button type="submit" class="btn btn-primary">Host a Game</button>
+            <button v-if="faction" type="submit" class="btn btn-primary">Host a Game</button>
           </div>
 
         </form>

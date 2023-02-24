@@ -10,8 +10,8 @@ function Tile(spriteTexture, normalMap, atX, atY, pp, coX, coY, terrain) {
   this.tile.getXform().setPosition(atX, atY);
   this.tile.getXform().setSize(9, 9);
   this.tile.setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
-  this.tile.coX = coX;
-  this.tile.coY = coY;
+  this.coX = coX;
+  this.coY = coY;
   this.tile.terrain = terrain;
   GameObject.call(this, this.tile);
 }
