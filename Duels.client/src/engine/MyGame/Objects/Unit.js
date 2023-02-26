@@ -1,4 +1,4 @@
-function Unit(spriteTexture, normalMap, atX, atY, pp, coX, coY) {
+function Unit(spriteTexture, normalMap, atX, atY, pp, coX, coY, team, type) {
   if (normalMap !== null) {
     this.unit = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -10,6 +10,8 @@ function Unit(spriteTexture, normalMap, atX, atY, pp, coX, coY) {
   this.unit.setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);//65 97
   this.coX = coX;
   this.coY = coY;
+  this.team = team;
+  this.type = type;
   GameObject.call(this, this.unit);
 }
 gEngine.Core.inheritPrototype(Unit, GameObject);

@@ -30,6 +30,10 @@ function MyGame(gameData) {
   // The main Camera
   this.mCamera = null;
 
+  this.mResourceUICamera = null;
+
+  this.mStructureMenuCamera = null;
+
   // The Map Struct and Unit Data
   this.mMapData = null;
   this.mStructData = null;
@@ -54,14 +58,18 @@ function MyGame(gameData) {
   this.mBlueText = null;
 
   // Holds the Move Token Objects
-  this.mMoveTokens = [];
+  this.mActionTokens = [];
+
+  this.mMenuItems = [];
+  this.menuItem = null;
 
   // The Variable for the selected unit or structure, and the tile
-  this.mUnitIndex = null;
+  this.mSelectIndex = null;
   this.mTile = null
 
   // A tiny sprite used to check for collisions with mouse clicks
   this.selectBox = null;
+  this.cursorBox = null;
 
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -90,31 +98,56 @@ MyGame.prototype.initialize = function () {
   );
   this.mCamera.setBackgroundColor([0.796, 0.796, 0.796, 1.0]);// [0.05, 0.02, 0.06, 1.0]
 
+  this.mResourceUICamera = new Camera(
+    vec2.fromValues(50, 36),
+    100,
+    [0, 568, 200, 200]
+  );
+  this.mResourceUICamera.setBackgroundColor([0.4, 0.4, 0.4, 1.0]);
+
+  this.mStructureMenuCamera = new Camera(vec2.fromValues(50, 36),
+    100,
+    [0, 0, 200, 568]
+  );
+  this.mStructureMenuCamera.setBackgroundColor([0.4, 0.4, 0.4, 1.0]);
+
   this.mMapData = this.gameData.terrainData.split("-");
   this.mStructData = this.gameData.structureData.split("-");
   this.mUnitData = this.gameData.troopData.split("-");
 
-  this.selectBox = new MouseSelect(this.kSpriteSheet, null, 15, 15);
+  this.selectBox = new MouseSelect(this.kSpriteSheet, null, 0, 0);
+  this.cursorBox = new MouseSelect(this.kSpriteSheet, null, 0, 0);
 
   this.mRedCoin = new LightRenderable(this.kSpriteSheet);
-  this.mRedCoin.getXform().setSize(4, 4);
-  this.mRedCoin.getXform().setPosition(-10, 68);
+  this.mRedCoin.getXform().setSize(20, 20);
+  this.mRedCoin.getXform().setPosition(12, 77);
   this.mRedCoin.setElementPixelPositions(313, 345, 0, 32);
 
   this.mRedText = new FontRenderable("x " + this.mGoldAmounts[0]);
   this.mRedText.setColor([0, 0, 0, 1]);
-  this.mRedText.getXform().setPosition(-6, 68);
-  this.mRedText.setTextHeight(3);
+  this.mRedText.getXform().setPosition(28, 60);
+  this.mRedText.setTextHeight(15);
 
   this.mBlueCoin = new LightRenderable(this.kSpriteSheet);
-  this.mBlueCoin.getXform().setSize(4, 4);
-  this.mBlueCoin.getXform().setPosition(-10, 63);
+  this.mBlueCoin.getXform().setSize(20, 20);
+  this.mBlueCoin.getXform().setPosition(12, 30);
   this.mBlueCoin.setElementPixelPositions(346, 378, 0, 32);
 
   this.mBlueText = new FontRenderable("x " + this.mGoldAmounts[1]);
   this.mBlueText.setColor([0, 0, 0, 1]);
-  this.mBlueText.getXform().setPosition(-6, 63);
-  this.mBlueText.setTextHeight(3);
+  this.mBlueText.getXform().setPosition(28, 32);
+  this.mBlueText.setTextHeight(15);
+
+  // this.mMenuItems.push(new LightRenderable(this.kSpriteSheet));
+  // this.mMenuItems[0].setColor([1, 1, 1, 0]);
+  // this.mMenuItems[0].getXform().setSize(20, 20);
+  // this.mMenuItems[0].getXform().setPosition(28, 32);
+  // this.mMenuItems[0].setElementPixelPositions(34, 66, 131, 163);
+
+
+  // this.mMenuItems[0].setColor([0, 0, 0, 1])
+  // this.mMenuItems[0].getXform().setSize(25, 35)
+  // this.mMenuItems[0].getXform().setPosition(13, 68)
 
 
   this.createHexMap();
@@ -138,6 +171,7 @@ MyGame.prototype.draw = function () {
 
   this.mCamera.setupViewProjection();
 
+
   for (tile in this.mTiles) {
     this.mTiles[tile].draw(this.mCamera);
   }
@@ -150,17 +184,26 @@ MyGame.prototype.draw = function () {
     this.mUnits[unit].draw(this.mCamera)
   }
 
-  for (token in this.mMoveTokens) {
-    this.mMoveTokens[token].draw(this.mCamera)
+  for (token in this.mActionTokens) {
+    this.mActionTokens[token].draw(this.mCamera)
   }
 
   this.selectBox.draw(this.mCamera)
 
-  this.mRedCoin.draw(this.mCamera);
-  this.mRedText.draw(this.mCamera);
+  this.mResourceUICamera.setupViewProjection();
 
-  this.mBlueCoin.draw(this.mCamera);
-  this.mBlueText.draw(this.mCamera);
+  this.mRedCoin.draw(this.mResourceUICamera);
+  this.mRedText.draw(this.mResourceUICamera);
+
+  this.mBlueCoin.draw(this.mResourceUICamera);
+  this.mBlueText.draw(this.mResourceUICamera);
+
+  this.mStructureMenuCamera.setupViewProjection();
+
+  for (item in this.mMenuItems) {
+    // console.log(this.mMenuItems[item].menuItem)
+    this.mMenuItems[item].menuItem.draw(this.mStructureMenuCamera);
+  }
 
 
 };
@@ -169,9 +212,8 @@ MyGame.prototype.draw = function () {
 // anything from this function!
 MyGame.prototype.update = function () {
   let cameraPos = this.mCamera.getViewport();
-  // console.log(cameraPos)
 
-  let viewport;
+  // let viewport;
 
   // Camera Controls
   if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)) {
@@ -191,13 +233,40 @@ MyGame.prototype.update = function () {
     this.mCamera.setViewport(cameraPos);
   }
 
-  // console.log(this.mCamera.getViewport())
+
+  // Cursor UI
+  document.body.style.cursor = "auto";
+
+  let h = [];
+  this.cursorBox.getXform().setPosition(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
+  for (let i = 0; i < this.mUnits.length; i++) {
+    if (this.cursorBox.pixelTouches(this.mUnits[i], h)) {
+      document.body.style.cursor = "pointer"
+    }
+  }
+  for (let i = 0; i < this.mActionTokens.length; i++) {
+    if (this.cursorBox.pixelTouches(this.mActionTokens[i], h)) {
+      document.body.style.cursor = "pointer"
+    }
+  }
+  for (let i = 0; i < this.mStructures.length; i++) {
+    if (this.cursorBox.pixelTouches(this.mStructures[i], h)) {
+      document.body.style.cursor = "pointer"
+    }
+  }
+  // for (let i = 0; i < this.mMenuItems.length; i++) {
+  //   for (let j = 0; j < this.mMenuItems[i].length; j++) {
+  //     console.log(this.mMenuItems[i].getObjectAt(j))
+  //     if (this.cursorBox.pixelTouches(this.mMenuItems[i][j], h)) {
+  //       document.body.style.cursor = "pointer"
+  //     }
+  //   }
+
+  // }
 
   // FIXME Figure out this stupid zoom system and why WCWidth Will never update even when told to update
   // if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Q)) {
-  //   // console.log("zooom")
   //   this.mCamera.zoomBy(1 - 0.05);
-  //   console.log(this.mCamera.getWCWidth())
   // }
   // if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
   //   cameraPos[0] -= 5;
@@ -208,9 +277,11 @@ MyGame.prototype.update = function () {
   // If Mouse is left clicked on canvas
   if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
     if (this.mCamera.isMouseInViewport()) {
-      // console.log(this.mCamera.mouseWCX())
       this.mUnits.forEach(u => {
         u.getXform().setSize(5, 5)
+      })
+      this.mStructures.forEach(s => {
+        s.getXform().setSize(5.3, 5.3)
       })
       this.checkMouseSelect(this.mCamera.mouseWCX(), this.mCamera.mouseWCY())
     }
@@ -218,6 +289,28 @@ MyGame.prototype.update = function () {
 
   this.mCamera.clampAtBoundary(this.mRedCoin.getXform(), 0.9);
 }
+
+MyGame.prototype.setupStructMenu = function (structIndex) {
+  let struct = this.mStructures[structIndex]
+
+  // console.log(struct)
+  let pp = [0, 0, 0, 0]
+  if (struct.team == 1) {
+    pp[0] = 0;
+    pp[1] = 32;
+  }
+  else if (struct.team == 2) {
+    pp[0] = 33;
+    pp[1] = 65;
+  }
+
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 165, [pp[0], pp[1], 230, 262], 2, "Swordsman"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 134, [pp[0], pp[1], 197, 229], 2, "General"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 103, [pp[0], pp[1], 164, 196], 2, "Archer"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 72, [pp[0], pp[1], 131, 163], 2, "Shieldman"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 41, [pp[0], pp[1], 98, 130], 2, "Knight"));
+}
+
 // Create a list of tiles in the map
 MyGame.prototype.createHexMap = function () {
   // Grid Coordinates
@@ -236,6 +329,7 @@ MyGame.prototype.createHexMap = function () {
 
   // Pixel position variables
   var pp = [];
+  var team;
 
   // Set pixel position based off terrain type
   for (tile in this.mMapData) {
@@ -259,8 +353,10 @@ MyGame.prototype.createHexMap = function () {
     // Select the row of the spritesheet based off player color
     if (this.mStructData[tile].substr(0, 1) == "1") {
       pp = [0, 32, 0, 0];
+      team = 1;
     } else if (this.mStructData[tile].substr(0, 1) == "2") {
-      pp = [33, 65, 0, 0];
+      pp = [34, 66, 0, 0];
+      team = 2;
     }
 
     // Add a townhall structure if on this tile
@@ -268,17 +364,17 @@ MyGame.prototype.createHexMap = function () {
       pp[2] = 65;
       pp[3] = 97;
 
-      this.mStructures.push(new LightRenderable(this.kSpriteSheet));
-      this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
-      this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
-      this.mStructures[this.mStructures.length - 1].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
+      this.mStructures.push(new Structure(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, team, "base"));
+      // this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
+      // this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
+      // this.mStructures[this.mStructures.length - 1].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
     }
 
     // Add a unit if on this tile
     if (this.mUnitData[tile].substr(1) == "hs") {
       pp[2] = 131;
       pp[3] = 163;
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY));
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, team));
     }
 
     // Move the tile over one
@@ -300,49 +396,89 @@ MyGame.prototype.createHexMap = function () {
 }
 
 MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
-  // console.log(mouseX, mouseY)
   let h = []
   this.selectBox.getXform().setPosition(mouseX, mouseY)
 
+  for (let i = 0; i < this.mActionTokens.length; i++) {
+    if (this.selectBox.pixelTouches(this.mActionTokens[i], h)) {
+      this.mMenuItems = [];
+      this.useUnitAction(this.mActionTokens[i], this.mSelectIndex)
+      return;
+    }
+  }
+
   for (let i = 0; i < this.mUnits.length; i++) {
     if (this.selectBox.pixelTouches(this.mUnits[i], h)) {
-      this.mUnitIndex = i;
+      this.mSelectIndex = i;
       this.mUnits[i].selectUnit();
-      this.mMoveTokens = [];
-      this.findAdjacentTiles(this.mUnits[i].coX, this.mUnits[i].coY)
+      this.mActionTokens = [];
+      this.mMenuItems = [];
+      this.findMoves(this.mUnits[i].coX, this.mUnits[i].coY, this.mUnits[i].team)
       return;
     }
   }
 
-  for (let i = 0; i < this.mMoveTokens.length; i++) {
-    if (this.selectBox.pixelTouches(this.mMoveTokens[i], h)) {
-      this.moveUnit(this.mMoveTokens[i], this.mUnitIndex)
+  for (let i = 0; i < this.mStructures.length; i++) {
+    if (this.selectBox.pixelTouches(this.mStructures[i], h)) {
+      this.mSelectIndex = i;
+      this.mActionTokens = [];
+      this.mMenuItems = [];
+      this.mStructures[i].selectStructure();
+      this.setupStructMenu(this.mSelectIndex);
       return;
     }
   }
 
-  this.mMoveTokens = []
-  this.mUnitIndex = null;
+  this.mActionTokens = []
+  this.mMenuItems = [];
+  this.mSelectIndex = null;
 
   return null;
-
-  // console.log(this.selectBox.pixelTouches(this.mUnits[1], h))
-  // this.mUnits[0].pixelTouches(mouseX, mouseY)
 }
 
-MyGame.prototype.moveUnit = function (moveToken, i) {
-  this.mUnits[i].updateCoords(moveToken.coX, moveToken.coY)
-  this.mUnits[i].getXform().setPosition(moveToken.getXform().getPosition()[0], moveToken.getXform().getPosition()[1]);
-  this.mMoveTokens = [];
+MyGame.prototype.useUnitAction = function (moveToken, i) {
+
+  if (moveToken.type == "Move") {
+    this.mUnits[i].updateCoords(moveToken.coX, moveToken.coY)
+    this.mUnits[i].getXform().setPosition(moveToken.getXform().getPosition()[0], moveToken.getXform().getPosition()[1]);
+    this.mActionTokens = [];
+    return;
+  }
+  else if (moveToken.type == "Attack") {
+    this.mUnits = this.mUnits.filter(unit => (unit.coX != moveToken.coX || unit.coY != moveToken.coY))
+    this.mActionTokens = [];
+  }
+
 }
 
-MyGame.prototype.findAdjacentTiles = function (coX, coY) {
+MyGame.prototype.findMoves = function (coX, coY, team) {
+  let noMove = false;
   this.mTiles.forEach(tile => {
     let y = tile.coY;
     let x = tile.coX;
     if (this.checkAdjacent(x, y, coX, coY) && tile.terrain != "b") {
-      this.mMoveTokens.push(new MoveToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y))
-      // console.log(tile.getXform().getPosition()[0])
+
+
+      this.mUnits.forEach(unit => {
+        if (unit.coX == x && unit.coY == y) {
+          if (unit.team == team) {
+            noMove = true
+            return;
+          } else if (unit.team != team) {
+            this.mActionTokens.push(new ActionToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Attack"))
+            noMove = true;
+            return;
+          }
+        }
+
+
+      })
+
+      if (!noMove) {
+        this.mActionTokens.push(new ActionToken(this.kSpriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Move"))
+      }
+
+      noMove = false;
     }
   })
 
