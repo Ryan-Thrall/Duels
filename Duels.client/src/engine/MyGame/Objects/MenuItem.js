@@ -5,7 +5,7 @@ function MenuItem(spriteTexture, normalMap, atX, atY, pp, price, type) {
   this.menuItem = new GameObjectSet();
   this.menuItem.addToSet(new Renderable())
   this.menuItem.getObjectAt(0).setColor([0.25, 0, 0.25, 1])
-  this.menuItem.getObjectAt(0).getXform().setSize(174, 30)
+  this.menuItem.getObjectAt(0).getXform().setSize(173.5, 30)
   this.menuItem.getObjectAt(0).getXform().setPosition(atX, atY)
 
   // Menu Item Coin

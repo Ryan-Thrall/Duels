@@ -138,30 +138,7 @@ MyGame.prototype.initialize = function () {
   this.mBlueText.getXform().setPosition(28, 32);
   this.mBlueText.setTextHeight(15);
 
-  // this.mMenuItems.push(new LightRenderable(this.kSpriteSheet));
-  // this.mMenuItems[0].setColor([1, 1, 1, 0]);
-  // this.mMenuItems[0].getXform().setSize(20, 20);
-  // this.mMenuItems[0].getXform().setPosition(28, 32);
-  // this.mMenuItems[0].setElementPixelPositions(34, 66, 131, 163);
-
-
-  // this.mMenuItems[0].setColor([0, 0, 0, 1])
-  // this.mMenuItems[0].getXform().setSize(25, 35)
-  // this.mMenuItems[0].getXform().setPosition(13, 68)
-
-
   this.createHexMap();
-
-  // this.mStructures.push(new LightRenderable(this.kSpriteSheet));
-  // this.mStructures[0].getXform().setSize(7, 7);
-  // this.mStructures[0].getXform().setPosition(45, 15.5);
-  // this.mStructures[0].setElementPixelPositions(0, 35, 67, 99);
-
-  // this.mUnits.push(new LightRenderable(this.kSpriteSheet));
-  // this.mUnits[0].getXform().setSize(3, 3);
-  // this.mUnits[0].getXform().setPosition(35, 15);
-  // this.mUnits[0].setElementPixelPositions(0, 35, 132, 164);
-
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -188,7 +165,7 @@ MyGame.prototype.draw = function () {
     this.mActionTokens[token].draw(this.mCamera)
   }
 
-  this.selectBox.draw(this.mCamera)
+  // this.selectBox.draw(this.mCamera)
 
   this.mResourceUICamera.setupViewProjection();
 
@@ -254,15 +231,27 @@ MyGame.prototype.update = function () {
       document.body.style.cursor = "pointer"
     }
   }
-  // for (let i = 0; i < this.mMenuItems.length; i++) {
-  //   for (let j = 0; j < this.mMenuItems[i].length; j++) {
-  //     console.log(this.mMenuItems[i].getObjectAt(j))
-  //     if (this.cursorBox.pixelTouches(this.mMenuItems[i][j], h)) {
-  //       document.body.style.cursor = "pointer"
-  //     }
-  //   }
 
-  // }
+  this.cursorBox.getXform().setPosition(this.mStructureMenuCamera.mouseWCX(), this.mStructureMenuCamera.mouseWCY())
+  for (let i = 0; i < this.mMenuItems.length; i++) {
+    let box;
+    let cBox;
+    let size = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getSize()
+    let cSize = this.cursorBox.getXform().getSize()
+    let pos = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getPosition()
+    let cPos = this.cursorBox.getXform().getPosition()
+    console.log(size[1] / 2)
+    box = [pos[0] - (size[0] / 2), pos[0] + (size[0] / 2), pos[1] + (size[1] / 2), pos[1] - (size[1] / 2)]
+    cBox = [cPos[0], cPos[0] + cSize[0], cPos[1], cPos[1] - cSize[1]]
+    console.log(box)
+    console.log(cBox)
+    if (cBox[1] > box[0] && cBox[1] < box[1] && cBox[2] > box[3] && cBox[3] < box[2]) {
+      document.body.style.cursor = "pointer"
+      return;
+    }
+
+
+  }
 
   // FIXME Figure out this stupid zoom system and why WCWidth Will never update even when told to update
   // if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Q)) {
@@ -403,6 +392,14 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY) {
     if (this.selectBox.pixelTouches(this.mActionTokens[i], h)) {
       this.mMenuItems = [];
       this.useUnitAction(this.mActionTokens[i], this.mSelectIndex)
+      if (this.mUnits[this.mSelectIndex].team == 1) {
+        this.mGoldAmounts[0]++;
+        this.mRedText.setText("x " + this.mGoldAmounts[0])
+      } else if (this.mUnits[this.mSelectIndex].team == 2) {
+        this.mGoldAmounts[1]++;
+        this.mBlueText.setText("x " + this.mGoldAmounts[1])
+      }
+
       return;
     }
   }
