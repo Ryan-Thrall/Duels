@@ -19,3 +19,7 @@ gEngine.Core.inheritPrototype(Structure, GameObject);
 Structure.prototype.selectStructure = function () {
   this.structure.getXform().setSize(5.8, 5.8)
 }
+
+Structure.prototype.unselectStructure = function () {
+  this.structure.getXform().setSize(5.3, 5.3)
+}

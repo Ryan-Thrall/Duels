@@ -16,3 +16,41 @@ function Tile(spriteTexture, normalMap, atX, atY, pp, coX, coY, terrain) {
   GameObject.call(this, this.tile);
 }
 gEngine.Core.inheritPrototype(Tile, GameObject)
+
+Tile.prototype.checkAdjacent = function (x, y, coX, coY) {
+  // Sideways Movement
+  if (y == coY) {
+    if (x == coX - 1 || x == coX + 1) {
+      return true;
+    }
+  }
+
+  // Down Movement
+  else if (y == coY + 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+  // Up Movement
+  else if (y == coY - 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+
+  return false;
+}

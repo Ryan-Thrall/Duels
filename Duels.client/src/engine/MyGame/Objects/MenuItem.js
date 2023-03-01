@@ -28,6 +28,9 @@ function MenuItem(spriteTexture, normalMap, atX, atY, pp, price, type) {
   this.menuItem.getObjectAt(3).getXform().setSize(20, 20);
   this.menuItem.getObjectAt(3).setElementPixelPositions(pp[0], pp[1], pp[2], pp[3])
 
+  this.type = type;
+  this.price = price;
+
 
   GameObjectSet.call(this, this.menuItem);
 }
