@@ -6,17 +6,23 @@ function ActionToken(spriteTexture, normalMap, atX, atY, coX, coY, type, usable)
   } else {
     this.token = new LightRenderable(spriteTexture);
   }
-  let pp = [0, 0, 0, 0]
+  let pp = [0, 0, 0, 0];
+  let size = 4;
+
   if (type == "Move") {
     pp = [280, 312, 0, 32];
+
   }
   else if (type == "Attack") {
-    pp = [280, 312, 34, 66];
+    pp = [280, 312, 33, 65];
+  } else if (type == "Settle") {
+    pp = [280, 312, 66, 98];
+    size = 3;
   }
 
   this.token.setColor([1, 1, 1, 0]);
   this.token.getXform().setPosition(atX, atY);
-  this.token.getXform().setSize(4, 4);
+  this.token.getXform().setSize(size, size);
   this.token.setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
   this.coX = coX;
   this.coY = coY;

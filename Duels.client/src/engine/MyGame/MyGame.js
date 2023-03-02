@@ -361,21 +361,17 @@ MyGame.prototype.createHexMap = function () {
   // Set pixel position based off terrain type
   for (tile in this.mMapData) {
     if (this.mMapData[tile][0] == "l") {
-      pp = [0, 55, 0, 64];
-      terrain = "p"
+      terrain = "plains"
     } else if (this.mMapData[tile][0] == "w") {
-      pp = [56, 111, 0, 64]
-      terrain = "w"
+      terrain = "water"
     } else if (this.mMapData[tile][0] == "h") {
-      pp = [112, 167, 0, 64]
-      terrain = "h"
+      terrain = "hills"
     } else if (this.mMapData[tile][0] == "f") {
-      pp = [168, 223, 0, 64]
-      terrain = "f"
+      terrain = "forest"
     }
 
     // Create the new tile
-    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, terrain));
+    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, terrain));
 
     // Select the row of the spritesheet based off player color
     if (this.mStructData[tile].substr(0, 1) == "1") {
@@ -393,10 +389,7 @@ MyGame.prototype.createHexMap = function () {
       pp[2] = 65;
       pp[3] = 97;
 
-      this.mStructures.push(new Structure(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), pp, coX, coY, team, "base"));
-      // this.mStructures[this.mStructures.length - 1].getXform().setSize(5.8, 5.8);
-      // this.mStructures[this.mStructures.length - 1].getXform().setPosition(x * 8.8 + 24, 56.5 - (y * 10));
-      // this.mStructures[this.mStructures.length - 1].setElementPixelPositions(pp[0], pp[1], pp[2], pp[3]);
+      this.mStructures.push(new Structure(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, team, "humanBase"));
     }
 
     // Add a unit if on this tile
@@ -434,7 +427,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       this.mMenuItems = [];
 
       // Do the Action and remove the tokens
-      this.mUnits = this.mUnits[this.mSelectIndex].useUnitAction(this.mActionTokens[i], this.mUnits, this.mGoldAmounts, this.mRedText, this.mBlueText)
+      this.mUnits = this.mUnits[this.mSelectIndex].useUnitAction(this.mActionTokens[i], this.mUnits, this.mGoldAmounts, this.mRedText, this.mBlueText, this.mStructures, this.kSpriteSheet)
       this.mActionTokens = [];
 
       return;
@@ -510,7 +503,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       })
 
 
-      if (occupied == false && this.mGoldAmounts[this.mStructures[this.mSelectIndex].team - 1] >= this.mMenuItems[i].price) {
+      if (occupied == false && this.mGoldAmounts[this.mStructures[this.mSelectIndex].team - 1] >= this.mMenuItems[i].price && this.mStructures[this.mSelectIndex].team == this.turn) {
         this.mUnits.push(new Unit(this.kSpriteSheet, null, this.mStructures[this.mSelectIndex].getXform().getPosition()[0], this.mStructures[this.mSelectIndex].getXform().getPosition()[1], this.mStructures[this.mSelectIndex].coX, this.mStructures[this.mSelectIndex].coY, this.mStructures[this.mSelectIndex].team, this.mMenuItems[i].type, true))
 
         if (this.mStructures[this.mSelectIndex].team == 1) {

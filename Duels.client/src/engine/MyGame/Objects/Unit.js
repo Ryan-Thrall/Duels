@@ -77,8 +77,7 @@ Unit.prototype.useUnit = function () {
   this.unit.getXform().setSize(4, 4);
 }
 
-Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText, blueText) {
-  console.log(moveToken.usable)
+Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText, blueText, structures, spriteSheet) {
   if (!moveToken.usable) {
     return Units;
   }
@@ -93,21 +92,19 @@ Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText,
     Units = Units.filter(unit => (unit.coX != moveToken.coX || unit.coY != moveToken.coY))
     this.useUnit();
   }
-
-  // if (this.team == 1) {
-  //   goldAmounts[0]++;
-  //   redText.setText("x " + goldAmounts[0])
-  // } else if (this.team == 2) {
-  //   goldAmounts[1]++;
-  //   blueText.setText("x " + goldAmounts[1])
-  // }
+  else if (moveToken.type == "Settle") {
+    structures.push(new Structure(spriteSheet, null, this.getXform().getPosition()[0], this.getXform().getPosition()[1], this.coX, this.coY, this.team, "humanBase"))
+    Units = Units.filter(unit => (unit.coX != this.coX || unit.coY != this.coY))
+  }
 
   return Units;
 
 
 }
 
+
 Unit.prototype.findMoves = function (Tiles, Units, actionTokens, spriteSheet, turn) {
+  let settleable = true;
   // True if Conditions don't allow a move
   let noMove = false;
   let usable = true;
@@ -149,6 +146,12 @@ Unit.prototype.findMoves = function (Tiles, Units, actionTokens, spriteSheet, tu
       usable = true;
     }
   })
+  if (this.team != turn) {
+    usable = false;
+  }
 
+  if (settleable) {
+    actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] + 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Settle", usable))
+  }
 
 }
