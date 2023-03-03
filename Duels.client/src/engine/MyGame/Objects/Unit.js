@@ -103,7 +103,7 @@ Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText,
 }
 
 
-Unit.prototype.findMoves = function (Tiles, Units, actionTokens, spriteSheet, turn) {
+Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spriteSheet, turn) {
   let settleable = true;
   // True if Conditions don't allow a move
   let noMove = false;
@@ -142,13 +142,21 @@ Unit.prototype.findMoves = function (Tiles, Units, actionTokens, spriteSheet, tu
         actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Move", usable))
       }
 
+
+
+      Structures.forEach(structure => {
+        if (structure.coX == x && structure.coY == y || structure.coX == this.coX && structure.coY == this.coY) {
+          settleable = false;
+        }
+      })
+
       noMove = false;
       usable = true;
     }
+
+
+
   })
-  if (this.team != turn) {
-    usable = false;
-  }
 
   if (settleable) {
     actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] + 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Settle", usable))

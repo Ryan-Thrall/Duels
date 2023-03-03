@@ -447,7 +447,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       // Select the Unit (Grows Slightly)
       this.mUnits[i].selectUnit();
 
-      this.mUnits[i].findMoves(this.mTiles, this.mUnits, this.mActionTokens, this.kSpriteSheet, this.turn)
+      this.mUnits[i].findMoves(this.mTiles, this.mUnits, this.mStructures, this.mActionTokens, this.kSpriteSheet, this.turn)
       return;
     }
   }
