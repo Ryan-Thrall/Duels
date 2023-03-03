@@ -77,9 +77,11 @@ Unit.prototype.useUnit = function () {
   this.unit.getXform().setSize(4, 4);
 }
 
-Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText, blueText, structures, spriteSheet) {
+Unit.prototype.useUnitAction = function (moveToken, Units, structures, spriteSheet) {
+  let data = [Units, structures]
+  console.log(data)
   if (!moveToken.usable) {
-    return Units;
+    return data;
   }
   Units.forEach(u => u.used = false)
 
@@ -93,11 +95,16 @@ Unit.prototype.useUnitAction = function (moveToken, Units, goldAmounts, redText,
     this.useUnit();
   }
   else if (moveToken.type == "Settle") {
+
     structures.push(new Structure(spriteSheet, null, this.getXform().getPosition()[0], this.getXform().getPosition()[1], this.coX, this.coY, this.team, "humanBase"))
+
+    structures = structures.filter(structure => (structure.coX != this.coX || structure.coY != this.coY || structure.team == this.team))
+
     Units = Units.filter(unit => (unit.coX != this.coX || unit.coY != this.coY))
   }
 
-  return Units;
+  data = [Units, structures]
+  return data;
 
 
 }
@@ -111,7 +118,12 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
   Tiles.forEach(tile => {
     let y = tile.coY;
     let x = tile.coX;
-    if (tile.checkAdjacent(x, y, this.coX, this.coY) && tile.terrain != "b") {
+
+    if (tile.coX == this.coX && tile.coY == this.coY && tile.terrain == "water") {
+      settleable = false;
+    }
+
+    if (tile.checkAdjacent(x, y, this.coX, this.coY) && tile.terrain != "blank") {
       if (this.team != turn) {
         usable = false;
       }
@@ -145,7 +157,7 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
 
 
       Structures.forEach(structure => {
-        if (structure.coX == x && structure.coY == y || structure.coX == this.coX && structure.coY == this.coY) {
+        if (structure.coX == x && structure.coY == y || structure.coX == this.coX && structure.coY == this.coY && this.team == structure.team) {
           settleable = false;
         }
       })

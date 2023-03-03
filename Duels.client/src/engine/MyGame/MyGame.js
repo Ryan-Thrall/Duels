@@ -46,13 +46,28 @@ function MyGame(gameData) {
 
   // Holds Gold Levels of all Players
   this.mGoldAmounts = [0, 0];
+  this.mKnowledgeAmounts = [0, 0];
+  this.mHousingAmounts = [1, 3, 1, 3];
 
   // UI for Game Info
   this.mRedCoin = null;
-  this.mRedText = null;
+  this.mRedGoldText = null;
+
+  this.mRedKnowledge = null;
+  this.mRedKnowledgeText = null;
+
+  this.mRedHousing = null;
+  this.mRedHousingText = null;
 
   this.mBlueCoin = null;
-  this.mBlueText = null;
+  this.mBlueGoldText = null;
+
+  this.mBlueKnowledge = null;
+  this.mBlueKnowledgeText = null;
+
+  this.mBlueHousing = null;
+  this.mBlueHousingText = null;
+
 
   this.mTurnCoin = null;
 
@@ -104,14 +119,14 @@ MyGame.prototype.initialize = function () {
   this.mResourceUICamera = new Camera(
     vec2.fromValues(50, 36),
     100,
-    [0, 568, 200, 200]
+    [0, 408, 200, 360]
   );
   this.mResourceUICamera.setBackgroundColor([0.4, 0.4, 0.4, 1.0]);
 
   // Initial Setup of the Structure Menu Camera
   this.mStructureMenuCamera = new Camera(vec2.fromValues(50, 36),
     100,
-    [0, 0, 200, 568]
+    [0, 0, 200, 408]
   );
   this.mStructureMenuCamera.setBackgroundColor([0.4, 0.4, 0.4, 1.0]);
 
@@ -174,11 +189,23 @@ MyGame.prototype.draw = function () {
 
   // Draw the Red UI Info
   this.mRedCoin.draw(this.mResourceUICamera);
-  this.mRedText.draw(this.mResourceUICamera);
+  this.mRedGoldText.draw(this.mResourceUICamera);
+
+  this.mRedKnowledge.draw(this.mResourceUICamera)
+  this.mRedKnowledgeText.draw(this.mResourceUICamera)
+
+  this.mRedHousing.draw(this.mResourceUICamera)
+  this.mRedHousingText.draw(this.mResourceUICamera)
 
   // Draw the Blue UI Info
   this.mBlueCoin.draw(this.mResourceUICamera);
-  this.mBlueText.draw(this.mResourceUICamera);
+  this.mBlueGoldText.draw(this.mResourceUICamera);
+
+  this.mBlueKnowledge.draw(this.mResourceUICamera)
+  this.mBlueKnowledgeText.draw(this.mResourceUICamera)
+
+  this.mBlueHousing.draw(this.mResourceUICamera)
+  this.mBlueHousingText.draw(this.mResourceUICamera)
 
   // Draw the Turn Coin
   this.mTurnCoin.draw(this.mResourceUICamera);
@@ -241,8 +268,12 @@ MyGame.prototype.update = function () {
     }
   };
 
-  this.mRedText.setText("x " + this.mGoldAmounts[0])
-  this.mBlueText.setText("x " + this.mGoldAmounts[1])
+  this.mRedGoldText.setText("x " + this.mGoldAmounts[0])
+  this.mRedKnowledgeText.setText("x " + this.mKnowledgeAmounts[0])
+  this.mRedHousingText.setText("x " + this.mHousingAmounts[0] + "/" + this.mHousingAmounts[1])
+  this.mBlueGoldText.setText("x " + this.mGoldAmounts[1])
+  this.mBlueKnowledgeText.setText("x " + this.mKnowledgeAmounts[1])
+  this.mBlueHousingText.setText("x " + this.mHousingAmounts[2] + "/" + this.mHousingAmounts[3])
 }
 
 MyGame.prototype.updateCursor = function () {
@@ -294,28 +325,68 @@ MyGame.prototype.updateCursor = function () {
 MyGame.prototype.setupResourceUI = function () {
   // Setup Resource UI
 
-  this.mTurnCoin = new TurnCoin(this.kSpriteSheet, null, 45, 70, this.turn);
+  this.mTurnCoin = new TurnCoin(this.kSpriteSheet, null, 46.5, 110, this.turn);
 
 
   this.mRedCoin = new LightRenderable(this.kSpriteSheet);
   this.mRedCoin.getXform().setSize(20, 20);
-  this.mRedCoin.getXform().setPosition(12, 40);
+  this.mRedCoin.getXform().setPosition(12, 80);
   this.mRedCoin.setElementPixelPositions(313, 345, 0, 32);
 
-  this.mRedText = new FontRenderable("x " + this.mGoldAmounts[0]);
-  this.mRedText.setColor([0, 0, 0, 1]);
-  this.mRedText.getXform().setPosition(28, 42);
-  this.mRedText.setTextHeight(15);
+  this.mRedGoldText = new FontRenderable("x " + this.mGoldAmounts[0]);
+  this.mRedGoldText.setColor([0, 0, 0, 1]);
+  this.mRedGoldText.getXform().setPosition(28, 82);
+  this.mRedGoldText.setTextHeight(15);
+
+  this.mRedKnowledge = new LightRenderable(this.kSpriteSheet);
+  this.mRedKnowledge.getXform().setSize(20, 20);
+  this.mRedKnowledge.getXform().setPosition(12, 58);
+  this.mRedKnowledge.setElementPixelPositions(313, 345, 33, 65);
+
+  this.mRedKnowledgeText = new FontRenderable("x " + this.mKnowledgeAmounts[0]);
+  this.mRedKnowledgeText.setColor([0, 0, 0, 1]);
+  this.mRedKnowledgeText.getXform().setPosition(28, 60);
+  this.mRedKnowledgeText.setTextHeight(15);
+
+  this.mRedHousing = new LightRenderable(this.kSpriteSheet);
+  this.mRedHousing.getXform().setSize(20, 20);
+  this.mRedHousing.getXform().setPosition(12, 38);
+  this.mRedHousing.setElementPixelPositions(313, 345, 66, 98);
+
+  this.mRedHousingText = new FontRenderable("x " + this.mHousingAmounts[0] + "/" + this.mHousingAmounts[1]);
+  this.mRedHousingText.setColor([0, 0, 0, 1]);
+  this.mRedHousingText.getXform().setPosition(28, 40);
+  this.mRedHousingText.setTextHeight(15);
 
   this.mBlueCoin = new LightRenderable(this.kSpriteSheet);
   this.mBlueCoin.getXform().setSize(20, 20);
-  this.mBlueCoin.getXform().setPosition(12, 18);
+  this.mBlueCoin.getXform().setPosition(12, 16);
   this.mBlueCoin.setElementPixelPositions(346, 378, 0, 32);
 
-  this.mBlueText = new FontRenderable("x " + this.mGoldAmounts[1]);
-  this.mBlueText.setColor([0, 0, 0, 1]);
-  this.mBlueText.getXform().setPosition(28, 20);
-  this.mBlueText.setTextHeight(15);
+  this.mBlueGoldText = new FontRenderable("x " + this.mGoldAmounts[1]);
+  this.mBlueGoldText.setColor([0, 0, 0, 1]);
+  this.mBlueGoldText.getXform().setPosition(28, 18);
+  this.mBlueGoldText.setTextHeight(15);
+
+  this.mBlueKnowledge = new LightRenderable(this.kSpriteSheet);
+  this.mBlueKnowledge.getXform().setSize(20, 20);
+  this.mBlueKnowledge.getXform().setPosition(12, -6);
+  this.mBlueKnowledge.setElementPixelPositions(346, 378, 33, 65);
+
+  this.mBlueKnowledgeText = new FontRenderable("x " + this.mKnowledgeAmounts[1]);
+  this.mBlueKnowledgeText.setColor([0, 0, 0, 1]);
+  this.mBlueKnowledgeText.getXform().setPosition(28, -4);
+  this.mBlueKnowledgeText.setTextHeight(15);
+
+  this.mBlueHousing = new LightRenderable(this.kSpriteSheet);
+  this.mBlueHousing.getXform().setSize(20, 20);
+  this.mBlueHousing.getXform().setPosition(12, -28);
+  this.mBlueHousing.setElementPixelPositions(346, 378, 66, 98);
+
+  this.mBlueHousingText = new FontRenderable("x " + this.mHousingAmounts[0] + "/" + this.mHousingAmounts[1]);
+  this.mBlueHousingText.setColor([0, 0, 0, 1]);
+  this.mBlueHousingText.getXform().setPosition(28, -26);
+  this.mBlueHousingText.setTextHeight(15);
 }
 
 MyGame.prototype.setupStructMenu = function (structIndex) {
@@ -331,11 +402,11 @@ MyGame.prototype.setupStructMenu = function (structIndex) {
     pp[1] = 65;
   }
 
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 165, [pp[0], pp[1], 230, 262], 1, "Swordsman"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 134, [pp[0], pp[1], 197, 229], 2, "General"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 103, [pp[0], pp[1], 164, 196], 3, "Archer"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 72, [pp[0], pp[1], 131, 163], 4, "Shieldman"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 41, [pp[0], pp[1], 98, 130], 5, "Cavalry"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 124, [pp[0], pp[1], 230, 262], 1, "Swordsman"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 93, [pp[0], pp[1], 197, 229], 2, "General"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 62, [pp[0], pp[1], 164, 196], 3, "Archer"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 31, [pp[0], pp[1], 131, 163], 4, "Shieldman"));
+  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 0, [pp[0], pp[1], 98, 130], 5, "Cavalry"));
 }
 
 // Create a list of tiles in the map
@@ -427,7 +498,12 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       this.mMenuItems = [];
 
       // Do the Action and remove the tokens
-      this.mUnits = this.mUnits[this.mSelectIndex].useUnitAction(this.mActionTokens[i], this.mUnits, this.mGoldAmounts, this.mRedText, this.mBlueText, this.mStructures, this.kSpriteSheet)
+      let data = this.mUnits[this.mSelectIndex].useUnitAction(this.mActionTokens[i], this.mUnits, this.mStructures, this.kSpriteSheet)
+      console.log(data)
+      this.mUnits = data[0];
+      this.mStructures = data[1];
+      // this.mHousingAmounts = data[2];
+
       this.mActionTokens = [];
 
       return;
@@ -472,14 +548,15 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
 
   this.selectBox.getXform().setPosition(this.mResourceUICamera.mouseWCX(), this.mResourceUICamera.mouseWCY())
   if (this.selectBox.pixelTouches(this.mTurnCoin, h)) {
-    this.mGoldAmounts = this.mTurnCoin.giveGold(this.turn, this.mGoldAmounts, this.mStructures);
+    // let data = this.mTurnCoin.giveResources(this.turn, this.mGoldAmounts, this.mKnowledgeAmounts, this.mStructures);
+    let data = this.mTurnCoin.endTurn(this.turn, this.mUnits, this.mStructures, this.mGoldAmounts, this.mKnowledgeAmounts, this.teams);
+    this.mUnits = data[0]
+    this.turn = data[1]
+    this.mGoldAmounts = data[2];
+    this.mKnowledgeAmounts = data[3];
 
-    this.turn++;
-    if (this.teams.filter(t => t == this.turn).length == 0) {
-      this.turn = this.teams[0];
-    }
 
-    this.mUnits = this.mTurnCoin.endTurn(this.turn, this.mUnits);
+
   }
 
   this.selectBox.getXform().setPosition(menuX, menuY)
