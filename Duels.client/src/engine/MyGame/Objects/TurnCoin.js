@@ -22,7 +22,7 @@ function TurnCoin(spriteTexture, normalMap, atX, atY, turn) {
 }
 gEngine.Core.inheritPrototype(TurnCoin, GameObject);
 
-TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, knowledgeAmounts, teams) {
+TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, knowledgeAmounts, AP, teams) {
 
   // Give Gold and Knowledge for each structure
   structures.forEach(s => {
@@ -34,6 +34,7 @@ TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, kno
 
   // Update the turn variable
   turn++;
+
 
   if (teams.filter(t => t == turn).length == 0) {
     turn = teams[0];
@@ -52,11 +53,10 @@ TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, kno
     u.unselectUnit();
   })
 
-  return [units, turn, goldAmounts, knowledgeAmounts]
-}
+  for (i = 0; i < AP.length; i++) {
+    AP[i][0] = AP[i][1];
+  }
+  console.log(AP)
 
-TurnCoin.prototype.giveResources = function (turn, goldAmounts, knowledgeAmounts, housingAmounts, structures) {
-
-
-  return [goldAmounts, knowledgeAmounts];
+  return [units, turn, goldAmounts, knowledgeAmounts, AP]
 }

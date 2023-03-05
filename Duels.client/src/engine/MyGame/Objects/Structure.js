@@ -1,4 +1,4 @@
-function Structure(spriteTexture, normalMap, atX, atY, coX, coY, team, type) {
+function Structure(spriteTexture, normalMap, atX, atY, coX, coY, team, type, sieged) {
   if (normalMap !== null) {
     this.structure = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -28,6 +28,7 @@ function Structure(spriteTexture, normalMap, atX, atY, coX, coY, team, type) {
   this.structure.setElementPixelPositions(this.pp[0], this.pp[1], this.pp[2], this.pp[3]);
   this.coX = coX;
   this.coY = coY;
+  this.sieged = sieged || false;
 
   GameObject.call(this, this.structure);
 }

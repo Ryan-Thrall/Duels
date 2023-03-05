@@ -77,10 +77,9 @@ Unit.prototype.useUnit = function () {
   this.unit.getXform().setSize(4, 4);
 }
 
-Unit.prototype.useUnitAction = function (moveToken, Units, structures, spriteSheet) {
-  let data = [Units, structures]
-  console.log(data)
-  if (!moveToken.usable) {
+Unit.prototype.useUnitAction = function (moveToken, Units, structures, AP, spriteSheet, team) {
+  let data = [Units, structures, AP]
+  if (!moveToken.usable || team != moveToken.team || AP[team - 1][0] <= 0) {
     return data;
   }
   Units.forEach(u => u.used = false)
@@ -89,10 +88,12 @@ Unit.prototype.useUnitAction = function (moveToken, Units, structures, spriteShe
     this.updateCoords(moveToken.coX, moveToken.coY)
     this.getXform().setPosition(moveToken.getXform().getPosition()[0], moveToken.getXform().getPosition()[1]);
     this.useUnit();
+    AP[team - 1][0]--;
   }
   else if (moveToken.type == "Attack") {
     Units = Units.filter(unit => (unit.coX != moveToken.coX || unit.coY != moveToken.coY))
     this.useUnit();
+    AP[team - 1][0]--;
   }
   else if (moveToken.type == "Settle") {
 
@@ -100,10 +101,13 @@ Unit.prototype.useUnitAction = function (moveToken, Units, structures, spriteShe
 
     structures = structures.filter(structure => (structure.coX != this.coX || structure.coY != this.coY || structure.team == this.team))
 
-    Units = Units.filter(unit => (unit.coX != this.coX || unit.coY != this.coY))
+    this.useUnit();
+    // Units = Units.filter(unit => (unit.coX != this.coX || unit.coY != this.coY))
+
+    AP[team - 1][0]--;
   }
 
-  data = [Units, structures]
+  data = [Units, structures, AP]
   return data;
 
 
@@ -140,7 +144,7 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
 
             // If unit is an enemy setup an attack token
           } else if (unit.team != this.team) {
-            actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Attack", usable))
+            actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Attack", usable, this.team))
             noMove = true;
             return;
           }
@@ -151,7 +155,7 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
 
       // If not occupied place a Move Token
       if (!noMove) {
-        actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Move", usable))
+        actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], x, y, "Move", usable, this.team))
       }
 
 
@@ -171,7 +175,7 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
   })
 
   if (settleable) {
-    actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] + 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Settle", usable))
+    actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] + 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Settle", usable, this.team))
   }
 
 }
