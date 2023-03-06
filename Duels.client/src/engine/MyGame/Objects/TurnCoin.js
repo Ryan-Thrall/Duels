@@ -32,6 +32,20 @@ TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, kno
     }
   })
 
+  // Unuse all units and pay for units
+  units.forEach(u => {
+    // console.log(turn - 1)
+    if (u.team == turn) {
+      goldAmounts[turn - 1]--;
+
+    }
+    u.used = false;
+    u.unselectUnit();
+
+  })
+
+  console.log(goldAmounts[turn - 1])
+
   // Update the turn variable
   turn++;
 
@@ -47,16 +61,9 @@ TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, kno
     this.mTurnCoin.setElementPixelPositions(412, 444, 33, 65)
   }
 
-  // Unuse all units
-  units.forEach(u => {
-    u.used = false;
-    u.unselectUnit();
-  })
-
   for (i = 0; i < AP.length; i++) {
     AP[i][0] = AP[i][1];
   }
-  console.log(AP)
 
   return [units, turn, goldAmounts, knowledgeAmounts, AP]
 }

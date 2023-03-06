@@ -66,6 +66,8 @@ function MyGame(gameData) {
 
   this.mTurnCoin = null;
 
+  this.mUnitPowerss = [];
+
   // A tiny sprite used to check for collisions with mouse clicks and mouse hovers
   this.selectBox = null;
   this.cursorBox = null;
@@ -139,6 +141,9 @@ MyGame.prototype.initialize = function () {
 
   // NOTE Setup Resource UI
   this.setupResourceUI();
+
+
+
 };
 
 // SECTION Initialize Resource UI
@@ -275,7 +280,7 @@ MyGame.prototype.createHexMap = function () {
 
     // Add a unit if on this tile
     if (this.mUnitData[tile].substr(1) == "hs") {
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, team, "Swordsman"));
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, team, "Swordsman", false, 1));
     }
 
     // Move the tile over one
@@ -308,7 +313,6 @@ MyGame.prototype.draw = function () {
   // Setup the main camera
   this.mCamera.setupViewProjection();
 
-
   // Draw the tiles
   for (tile in this.mTiles) {
     this.mTiles[tile].draw(this.mCamera);
@@ -319,14 +323,24 @@ MyGame.prototype.draw = function () {
     this.mStructures[struct].draw(this.mCamera)
   }
 
+  this.mUnitPowers = [];
   // Draw the Units
   for (unit in this.mUnits) {
     this.mUnits[unit].draw(this.mCamera)
+    let pos = this.mUnits[unit].getXform().getPosition()
+    this.mUnitPowers.push(new FontRenderable("x " + this.mUnits[unit].size))
+    this.mUnitPowers[unit].setColor([1, 1, 1, 1]);
+    this.mUnitPowers[unit].getXform().setPosition(pos[0] - 0.6, pos[1] - 1.4);
+    this.mUnitPowers[unit].setTextHeight(1);
   }
 
   // Draw the action tokens
   for (token in this.mActionTokens) {
     this.mActionTokens[token].draw(this.mCamera)
+  }
+
+  for (power in this.mUnitPowers) {
+    this.mUnitPowers[power].draw(this.mCamera)
   }
 
   // Setup the Resource Camera
@@ -369,6 +383,7 @@ MyGame.prototype.draw = function () {
       this.mMenuItems[item].menuItem.draw(this.mStructureMenuCamera);
     }
   }
+
 
 
 
@@ -428,6 +443,9 @@ MyGame.prototype.update = function () {
   this.mBlueGoldText.setText("x " + this.mGoldAmounts[1])
   this.mBlueKnowledgeText.setText("x " + this.mKnowledgeAmounts[1])
   this.mBluePopulationText.setText("x " + this.mPopulationAmounts[1])
+
+  // this.mUnits.forEach(u => {
+  // })
 }
 
 MyGame.prototype.updateCursor = function () {
@@ -460,19 +478,9 @@ MyGame.prototype.updateCursor = function () {
 
   this.cursorBox.getXform().setPosition(this.mStructureMenuCamera.mouseWCX(), this.mStructureMenuCamera.mouseWCY())
   for (let i = 0; i < this.mMenuItems.length; i++) {
-    let box;
-    let cBox;
-    let size = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getSize()
-    let cSize = this.cursorBox.getXform().getSize()
-    let pos = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getPosition()
-    let cPos = this.cursorBox.getXform().getPosition()
-    box = [pos[0] - (size[0] / 2), pos[0] + (size[0] / 2), pos[1] + (size[1] / 2), pos[1] - (size[1] / 2)]
-    cBox = [cPos[0], cPos[0] + cSize[0], cPos[1], cPos[1] - cSize[1]]
-    if (cBox[1] > box[0] && cBox[1] < box[1] && cBox[2] > box[3] && cBox[3] < box[2]) {
+    if (this.cursorBox.pixelTouches(this.mMenuItems[i], h)) {
       document.body.style.cursor = "pointer"
     }
-
-
   }
 }
 
@@ -489,11 +497,36 @@ MyGame.prototype.setupStructMenu = function (structIndex) {
     pp[1] = 65;
   }
 
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 124, [pp[0], pp[1], 230, 262], 1, "Swordsman"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 93, [pp[0], pp[1], 197, 229], 1, "General"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 62, [pp[0], pp[1], 164, 196], 1, "Archer"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 31, [pp[0], pp[1], 131, 163], 1, "Shieldman"));
-  this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 13, 0, [pp[0], pp[1], 98, 130], 1, "Cavalry"));
+  let units = [];
+
+  this.mUnits.forEach(unit => {
+    if (unit.team == this.mStructures[structIndex].team) {
+      units.push(unit.type)
+    }
+  })
+  console.log(units)
+
+  if (!units.includes("Swordsman")) {
+    this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 60, 210, [pp[0], pp[1], 230, 262], 0, "Swordsman"));
+  }
+  if (!units.includes("General")) {
+    this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 35, 190, [pp[0], pp[1], 197, 229], 0, "General"));
+  }
+  if (!units.includes("Archer")) {
+    this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 60, 170, [pp[0], pp[1], 164, 196], 0, "Archer"));
+  }
+  if (!units.includes("Shieldman")) {
+    this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 35, 150, [pp[0], pp[1], 131, 163], 0, "Shieldman"));
+  }
+  if (!units.includes("Cavalry")) {
+    this.mMenuItems.push(new MenuItem(this.kSpriteSheet, null, 60, 130, [pp[0], pp[1], 98, 130], 0, "Cavalry"));
+  }
+
+
+
+
+
+
 }
 
 
@@ -510,10 +543,11 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       this.mMenuItems = [];
 
       // Do the Action and remove the tokens
-      let data = this.mUnits[this.mSelectObject.index].useUnitAction(this.mActionTokens[i], this.mUnits, this.mStructures, this.mAPAmounts, this.kSpriteSheet, this.mSelectObject.team)
+      let data = this.mUnits[this.mSelectObject.index].useUnitAction(this.mActionTokens[i], this.mUnits, this.mStructures, this.mAPAmounts, this.mPopulationAmounts, this.kSpriteSheet, this.mSelectObject.team)
       this.mUnits = data[0];
       this.mStructures = data[1];
       this.mAPAmounts = data[2];
+      this.mPopulationAmounts = data[3];
 
       this.mActionTokens = [];
 
@@ -549,7 +583,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
 
       // Save the Index of the Structure
       this.mSelectObject.index = i;
-      this.mSelectObject.team = this.mUnits[i].team;
+      this.mSelectObject.team = this.mStructures[i].team;
 
       // Select the Structure (Grows Slightly)
       this.mStructures[i].selectStructure();
@@ -575,16 +609,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
 
   this.selectBox.getXform().setPosition(menuX, menuY)
   for (let i = 0; i < this.mMenuItems.length; i++) {
-    let box;
-    let cBox;
-    let size = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getSize()
-    let cSize = this.selectBox.getXform().getSize()
-    let pos = this.mMenuItems[i].menuItem.getObjectAt(0).getXform().getPosition()
-    let cPos = this.selectBox.getXform().getPosition()
-    box = [pos[0] - (size[0] / 2), pos[0] + (size[0] / 2), pos[1] + (size[1] / 2), pos[1] - (size[1] / 2)]
-    cBox = [cPos[0], cPos[0] + cSize[0], cPos[1], cPos[1] - cSize[1]]
-    if (cBox[1] > box[0] && cBox[1] < box[1] && cBox[2] > box[3] && cBox[3] < box[2]) {
-
+    if (this.cursorBox.pixelTouches(this.mMenuItems[i], h)) {
       let occupied = false;
       this.mUnits.forEach(u => {
         if (u.coX == this.mStructures[this.mSelectObject.index].coX && u.coY == this.mStructures[this.mSelectObject.index].coY) {
@@ -594,16 +619,18 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       })
 
 
-      if (occupied == false && this.mGoldAmounts[this.mStructures[this.mSelectObject.index].team - 1] >= this.mMenuItems[i].price && this.mStructures[this.mSelectObject.index].team == this.turn && this.mPopulationAmounts[this.mStructures[this.mSelectObject.index].team - 1] >= 1) {
-        this.mUnits.push(new Unit(this.kSpriteSheet, null, this.mStructures[this.mSelectObject.index].getXform().getPosition()[0], this.mStructures[this.mSelectObject.index].getXform().getPosition()[1], this.mStructures[this.mSelectObject.index].coX, this.mStructures[this.mSelectObject.index].coY, this.mStructures[this.mSelectObject.index].team, this.mMenuItems[i].type, true))
+      if (occupied == false && this.mStructures[this.mSelectObject.index].team == this.turn && this.mPopulationAmounts[this.mStructures[this.mSelectObject.index].team - 1] >= 1 && this.mAPAmounts[this.turn - 1][0] > 0) {
+        this.mUnits.push(new Unit(this.kSpriteSheet, null, this.mStructures[this.mSelectObject.index].getXform().getPosition()[0], this.mStructures[this.mSelectObject.index].getXform().getPosition()[1], this.mStructures[this.mSelectObject.index].coX, this.mStructures[this.mSelectObject.index].coY, this.mStructures[this.mSelectObject.index].team, this.mMenuItems[i].type, true, 1))
 
         if (this.mStructures[this.mSelectObject.index].team == 1) {
           this.mGoldAmounts[0] -= this.mMenuItems[i].price;
           this.mPopulationAmounts[0]--;
+          this.mAPAmounts[0][0]--;
 
         } else if (this.mStructures[this.mSelectObject.index].team == 2) {
           this.mGoldAmounts[1] -= this.mMenuItems[i].price;
-          this.mPopulationAmounts[1]--;
+          this.mPopulationAmounts[0]--;
+          this.mAPAmounts[1][0]--;
         }
       }
 

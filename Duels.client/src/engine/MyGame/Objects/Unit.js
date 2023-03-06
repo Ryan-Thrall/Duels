@@ -1,4 +1,4 @@
-function Unit(spriteTexture, normalMap, atX, atY, coX, coY, team, type, used) {
+function Unit(spriteTexture, normalMap, atX, atY, coX, coY, team, type, used, size) {
   if (normalMap !== null) {
     this.unit = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -44,6 +44,8 @@ function Unit(spriteTexture, normalMap, atX, atY, coX, coY, team, type, used) {
   this.team = team;
   this.type = type;
   this.used = used;
+  this.size = size;
+
   GameObject.call(this, this.unit);
 }
 gEngine.Core.inheritPrototype(Unit, GameObject);
@@ -77,12 +79,11 @@ Unit.prototype.useUnit = function () {
   this.unit.getXform().setSize(4, 4);
 }
 
-Unit.prototype.useUnitAction = function (moveToken, Units, structures, AP, spriteSheet, team) {
-  let data = [Units, structures, AP]
+Unit.prototype.useUnitAction = function (moveToken, Units, structures, AP, pop, spriteSheet, team) {
+  let data = [Units, structures, AP, pop]
   if (!moveToken.usable || team != moveToken.team || AP[team - 1][0] <= 0) {
     return data;
   }
-  Units.forEach(u => u.used = false)
 
   if (moveToken.type == "Move") {
     this.updateCoords(moveToken.coX, moveToken.coY)
@@ -91,7 +92,24 @@ Unit.prototype.useUnitAction = function (moveToken, Units, structures, AP, sprit
     AP[team - 1][0]--;
   }
   else if (moveToken.type == "Attack") {
-    Units = Units.filter(unit => (unit.coX != moveToken.coX || unit.coY != moveToken.coY))
+    // Units = Units.forEach(unit =>  {
+    //   if (unit.coX != moveToken.coX || unit.coY != moveToken.coY) {
+    //     unit.size--;
+    //     if (unit.size <= 0) {
+    //       Units.splice()
+    //     }
+    //   }
+    // })
+
+    for (i = 0; i < Units.length; i++) {
+      if (Units[i].coX == moveToken.coX && Units[i].coY == moveToken.coY) {
+        Units[i].size--;
+        if (Units[i].size <= 0) {
+          Units.splice(i, 1);
+        }
+      }
+    }
+
     this.useUnit();
     AP[team - 1][0]--;
   }
@@ -102,12 +120,19 @@ Unit.prototype.useUnitAction = function (moveToken, Units, structures, AP, sprit
     structures = structures.filter(structure => (structure.coX != this.coX || structure.coY != this.coY || structure.team == this.team))
 
     this.useUnit();
+    AP[team - 1][1]++;
     // Units = Units.filter(unit => (unit.coX != this.coX || unit.coY != this.coY))
 
     AP[team - 1][0]--;
   }
+  else if (moveToken.type == "Bolster" && pop[team - 1] > 0) {
+    this.size++;
+    this.useUnit();
+    AP[team - 1][0]--;
+    pop[team - 1]--
+  }
 
-  data = [Units, structures, AP]
+  data = [Units, structures, AP, pop]
   return data;
 
 
@@ -161,8 +186,13 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
 
 
       Structures.forEach(structure => {
-        if (structure.coX == x && structure.coY == y || structure.coX == this.coX && structure.coY == this.coY && this.team == structure.team) {
+        if (structure.coX == x && structure.coY == y) {
           settleable = false;
+        }
+
+        if (structure.coX == this.coX && structure.coY == this.coY && this.team == structure.team) {
+          settleable = false;
+          actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] - 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Bolster", usable, this.team))
         }
       })
 
@@ -173,6 +203,8 @@ Unit.prototype.findMoves = function (Tiles, Units, Structures, actionTokens, spr
 
 
   })
+
+
 
   if (settleable) {
     actionTokens.push(new ActionToken(spriteSheet, null, this.getXform().getPosition()[0] + 1.8, this.getXform().getPosition()[1] + 1.8, this.coX, this.coY, "Settle", usable, this.team))

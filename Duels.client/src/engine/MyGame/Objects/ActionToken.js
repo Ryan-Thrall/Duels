@@ -18,6 +18,9 @@ function ActionToken(spriteTexture, normalMap, atX, atY, coX, coY, type, usable,
   } else if (type == "Settle") {
     pp = [280, 312, 66, 98];
     size = 3;
+  } else if (type == "Bolster") {
+    pp = [280, 312, 99, 131];
+    size = 3;
   }
 
   this.token.setColor([1, 1, 1, 0]);
