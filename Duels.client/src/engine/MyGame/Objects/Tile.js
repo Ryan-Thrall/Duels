@@ -1,6 +1,6 @@
 
 
-function Tile(spriteTexture, normalMap, atX, atY, coX, coY, terrain) {
+function Tile(spriteTexture, normalMap, atX, atY, coX, coY, num, terrain) {
   if (normalMap !== null) {
     this.tile = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -25,45 +25,108 @@ function Tile(spriteTexture, normalMap, atX, atY, coX, coY, terrain) {
   this.tile.setElementPixelPositions(this.pp[0], this.pp[1], this.pp[2], this.pp[3]);
   this.coX = coX;
   this.coY = coY;
+  this.num = num;
 
   GameObject.call(this, this.tile);
 }
 gEngine.Core.inheritPrototype(Tile, GameObject)
 
-Tile.prototype.checkAdjacent = function (x, y, coX, coY) {
-  // Sideways Movement
-  if (y == coY) {
-    if (x == coX - 1 || x == coX + 1) {
-      return true;
-    }
-  }
+// Tile.prototype.checkAdjacent = function (x, y, coX, coY) {
+//   // Sideways Movement
+//   if (y == coY) {
+//     if (x == coX - 1 || x == coX + 1) {
+//       return true;
+//     }
+//   }
 
-  // Down Movement
-  else if (y == coY + 1) {
-    if (coY % 2 == 0) {
-      if (x == coX || x == coX - 1) {
-        return true;
-      }
-    } else {
-      if (x == coX || x == coX + 1) {
-        return true;
-      }
-    }
-  }
+//   // Down Movement
+//   else if (y == coY + 1) {
+//     if (coY % 2 == 0) {
+//       if (x == coX || x == coX - 1) {
+//         return true;
+//       }
+//     } else {
+//       if (x == coX || x == coX + 1) {
+//         return true;
+//       }
+//     }
+//   }
 
-  // Up Movement
-  else if (y == coY - 1) {
-    if (coY % 2 == 0) {
-      if (x == coX || x == coX - 1) {
-        return true;
-      }
-    } else {
-      if (x == coX || x == coX + 1) {
-        return true;
-      }
-    }
-  }
+//   // Up Movement
+//   else if (y == coY - 1) {
+//     if (coY % 2 == 0) {
+//       if (x == coX || x == coX - 1) {
+//         return true;
+//       }
+//     } else {
+//       if (x == coX || x == coX + 1) {
+//         return true;
+//       }
+//     }
+//   }
 
 
-  return false;
-}
+//   return false;
+// }
+
+// Tile.prototype.checkDoubleAdjacent = function (x, y, coX, coY) {
+//   // Sideways Movement
+//   if (y == coY) {
+//     if (x >= coX - 2 && x <= coX + 2) {
+//       return true;
+//     }
+//   }
+
+//   // Down Movement
+//   else if (y == coY + 1) {
+//     if (coY % 2 == 0) {
+//       if (x <= coX + 1 && x >= coX - 2) {
+//         return true;
+//       }
+//     } else {
+//       if (x >= coX - 1 && x <= coX + 2) {
+//         return true;
+//       }
+//     }
+//   }
+
+//   else if (y == coY + 2) {
+//     if (coY % 2 == 0) {
+//       if (x <= coX + 1 && x >= coX - 1) {
+//         return true;
+//       }
+//     } else {
+//       if (x >= coX && x <= coX + 2) {
+//         return true;
+//       }
+//     }
+//   }
+
+//   // Up Movement
+//   else if (y == coY - 1) {
+//     if (coY % 2 == 0) {
+//       if (x <= coX + 1 && x >= coX - 2) {
+//         return true;
+//       }
+//     } else {
+//       if (x >= coX - 1 && x <= coX + 2) {
+//         return true;
+//       }
+//     }
+//   }
+
+//   // Up Movement
+//   else if (y == coY - 2) {
+//     if (coY % 2 == 0) {
+//       if (x <= coX + 1 && x >= coX - 1) {
+//         return true;
+//       }
+//     } else {
+//       if (x = coX - 1 && x <= coX + 1) {
+//         return true;
+//       }
+//     }
+//   }
+
+//   return false;
+// }

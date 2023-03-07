@@ -38,13 +38,15 @@ TurnCoin.prototype.endTurn = function (turn, units, structures, goldAmounts, kno
     if (u.team == turn) {
       goldAmounts[turn - 1]--;
 
+    } else {
+      u.used = false;
+      u.unselectUnit();
     }
-    u.used = false;
-    u.unselectUnit();
+
 
   })
 
-  console.log(goldAmounts[turn - 1])
+  // console.log(goldAmounts[turn - 1])
 
   // Update the turn variable
   turn++;

@@ -66,7 +66,8 @@ function MyGame(gameData) {
 
   this.mTurnCoin = null;
 
-  this.mUnitPowerss = [];
+  this.mUnitPowers = [];
+  this.mTileNums = [];
 
   // A tiny sprite used to check for collisions with mouse clicks and mouse hovers
   this.selectBox = null;
@@ -230,6 +231,7 @@ MyGame.prototype.createHexMap = function () {
   // NOTE Coordinate Variables
   var coX = 0;
   var coY = 0;
+  var num = 0;
 
   var x = 0;
   var y = 0;
@@ -257,7 +259,7 @@ MyGame.prototype.createHexMap = function () {
     }
 
     // Create the new tile
-    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, terrain));
+    this.mTiles.push(new Tile(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, num, terrain));
 
     // Select the row of the spritesheet based off player color
     if (this.mStructData[tile].substr(0, 1) == "1") {
@@ -275,12 +277,12 @@ MyGame.prototype.createHexMap = function () {
       pp[2] = 65;
       pp[3] = 97;
 
-      this.mStructures.push(new Structure(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, team, "humanBase"));
+      this.mStructures.push(new Structure(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, num, team, "humanBase"));
     }
 
     // Add a unit if on this tile
     if (this.mUnitData[tile].substr(1) == "hs") {
-      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, team, "Swordsman", false, 1));
+      this.mUnits.push(new Unit(this.kSpriteSheet, null, x * 8.8 + 24, 56.5 - (y * 10), coX, coY, num, team, "Swordsman", false, 1));
     }
 
     // Move the tile over one
@@ -298,6 +300,8 @@ MyGame.prototype.createHexMap = function () {
         x = 0;
       }
     }
+
+    num++;
   }
 }
 
@@ -316,7 +320,16 @@ MyGame.prototype.draw = function () {
   // Draw the tiles
   for (tile in this.mTiles) {
     this.mTiles[tile].draw(this.mCamera);
+    // let pos = this.mTiles[tile].getXform().getPosition()
+    // this.mTileNums.push(new FontRenderable("" + this.mTiles[tile].num))
+    // this.mTileNums[tile].setColor([1, 1, 1, 1]);
+    // this.mTileNums[tile].getXform().setPosition(pos[0], pos[1]);
+    // this.mTileNums[tile].setTextHeight(2);
   }
+
+  // for (nums in this.mTileNums) {
+  //   this.mTileNums[nums].draw(this.mCamera)
+  // }
 
   // Draw the structures
   for (struct in this.mStructures) {
@@ -569,7 +582,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
       // Select the Unit (Grows Slightly)
       this.mUnits[i].selectUnit();
 
-      this.mUnits[i].findMoves(this.mTiles, this.mUnits, this.mStructures, this.mActionTokens, this.kSpriteSheet, this.turn)
+      this.mUnits[i].findActions(this.mTiles, this.mUnits, this.mStructures, this.mActionTokens, this.kSpriteSheet, this.turn)
       return;
     }
   }
@@ -620,7 +633,7 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
 
 
       if (occupied == false && this.mStructures[this.mSelectObject.index].team == this.turn && this.mPopulationAmounts[this.mStructures[this.mSelectObject.index].team - 1] >= 1 && this.mAPAmounts[this.turn - 1][0] > 0) {
-        this.mUnits.push(new Unit(this.kSpriteSheet, null, this.mStructures[this.mSelectObject.index].getXform().getPosition()[0], this.mStructures[this.mSelectObject.index].getXform().getPosition()[1], this.mStructures[this.mSelectObject.index].coX, this.mStructures[this.mSelectObject.index].coY, this.mStructures[this.mSelectObject.index].team, this.mMenuItems[i].type, true, 1))
+        this.mUnits.push(new Unit(this.kSpriteSheet, null, this.mStructures[this.mSelectObject.index].getXform().getPosition()[0], this.mStructures[this.mSelectObject.index].getXform().getPosition()[1], this.mStructures[this.mSelectObject.index].coX, this.mStructures[this.mSelectObject.index].coY, this.mStructures[this.mSelectObject.index].num, this.mStructures[this.mSelectObject.index].team, this.mMenuItems[i].type, true, 1))
 
         if (this.mStructures[this.mSelectObject.index].team == 1) {
           this.mGoldAmounts[0] -= this.mMenuItems[i].price;
@@ -647,3 +660,112 @@ MyGame.prototype.checkMouseSelect = function (mouseX, mouseY, menuX, menuY) {
   return null;
 }
 
+MyGame.prototype.checkAdjacent = function (x, y, coX, coY) {
+
+  if (x == coX && y == coY) {
+    return true;
+  }
+
+  // Sideways Movement
+  else if (y == coY) {
+    if (x == coX - 1 || x == coX + 1) {
+      return true;
+    }
+  }
+
+  // Down Movement
+  else if (y == coY + 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+  // Up Movement
+  else if (y == coY - 1) {
+    if (coY % 2 == 0) {
+      if (x == coX || x == coX - 1) {
+        return true;
+      }
+    } else {
+      if (x == coX || x == coX + 1) {
+        return true;
+      }
+    }
+  }
+
+
+  return false;
+}
+
+MyGame.prototype.checkDoubleAdjacent = function (x, y, coX, coY) {
+
+  if (x == coX && y == coY) {
+    return true;
+  }
+
+  // Sideways Movement
+  if (y == coY) {
+    if (x >= coX - 2 && x <= coX + 2) {
+      return true;
+    }
+  }
+
+  // Down Movement
+  else if (y == coY + 1) {
+    if (coY % 2 == 0) {
+      if (x <= coX + 1 && x >= coX - 2) {
+        return true;
+      }
+    } else {
+      if (x >= coX - 1 && x <= coX + 2) {
+        return true;
+      }
+    }
+  }
+
+  else if (y == coY + 2) {
+    if (coY % 2 == 0) {
+      if (x <= coX + 1 && x >= coX - 1) {
+        return true;
+      }
+    } else {
+      if (x >= coX - 1 && x <= coX + 1) {
+        return true;
+      }
+    }
+  }
+
+  // Up Movement
+  else if (y == coY - 1) {
+    if (coY % 2 == 0) {
+      if (x <= coX + 1 && x >= coX - 2) {
+        return true;
+      }
+    } else {
+      if (x >= coX - 1 && x <= coX + 2) {
+        return true;
+      }
+    }
+  }
+
+  // Up Movement
+  else if (y == coY - 2) {
+    if (coY % 2 == 0) {
+      if (x <= coX + 1 && x >= coX - 1) {
+        return true;
+      }
+    } else {
+      if (x >= coX - 1 && x <= coX + 1) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}

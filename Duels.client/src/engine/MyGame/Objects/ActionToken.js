@@ -1,6 +1,6 @@
 
 
-function ActionToken(spriteTexture, normalMap, atX, atY, coX, coY, type, usable, team) {
+function ActionToken(spriteTexture, normalMap, atX, atY, coX, coY, num, type, usable, team) {
   if (normalMap !== null) {
     this.token = new IllumRenderable(spriteTexture, normalMap);
   } else {
@@ -32,6 +32,7 @@ function ActionToken(spriteTexture, normalMap, atX, atY, coX, coY, type, usable,
   this.type = type;
   this.usable = usable;
   this.team = team;
+  this.num = num;
   GameObject.call(this, this.token);
 }
 gEngine.Core.inheritPrototype(ActionToken, GameObject);
