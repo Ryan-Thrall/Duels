@@ -206,32 +206,15 @@ Unit.prototype.findActions = function (Tiles, Units, Structures, actionTokens, s
     adjTiles = data[0];
     adjUnits = data[1];
     adjStructs = data[2];
-    blockers = data[3]
-    // console.log(blockers)
-    // console.log(this.coX, this.coY)
     console.log(adjTiles)
 
     let settleable = true;
-    let blocked = [];
-
-    // blockers.forEach(blocker => {
-    //   if (blocker.coY == this.coY && blocker.coX == this.coX - 1) {
-    //     blocked.push(blocker.num - 1)
-    //   }
-    //   else if (blocker.coY == this.coY && blocker.coX == this.coX + 1) {
-    //     blocked.push(blocker.num + 1)
-    //   }
-    //   else if (blocker.coY == this.coY + 1 && blocker.coX == this.coX - 1) {
-    //     blocked.push()
-    //   }
-    // })
-    // console.log(blocked)
 
     // Loop Through Adjacent Tiles
     adjTiles.forEach(tile => {
 
       // Add a Move token if moveable
-      if (this.Moves2(tile, adjUnits, blocked)) {
+      if (this.Moves2(tile, adjUnits)) {
         actionTokens.push(new ActionToken(spriteSheet, null, tile.getXform().getPosition()[0], tile.getXform().getPosition()[1], tile.coX, tile.coY, tile.num, "Move", usable, this.team))
         // Add an Attack token if attackable
       } else if (this.Attacks1(tile, adjUnits)) {
@@ -292,6 +275,7 @@ Unit.prototype.findDoubleAdjacencies = function (Tiles, Units, Structures) {
   let adjUnits = [];
   let adjStructs = [];
   let blockers = [];
+  let double = true;
 
   Units.forEach(unit => {
     if (MyGame.prototype.checkDoubleAdjacent(unit.coX, unit.coY, this.coX, this.coY)) {
@@ -307,30 +291,37 @@ Unit.prototype.findDoubleAdjacencies = function (Tiles, Units, Structures) {
     if (MyGame.prototype.checkAdjacent(tile.coX, tile.coY, this.coX, this.coY)) {
       adjTiles.push(tile);
     }
+
+    if (tile.coX == this.coX && tile.coY == this.coY && tile.terrain == "water") {
+      double = false;
+    }
   })
 
-  adjTiles.forEach(adjTile => {
-    Tiles.forEach(tile => {
-      if (!blockers.includes(adjTile.num)) {
-        if (MyGame.prototype.checkAdjacent(tile.coX, tile.coY, adjTile.coX, adjTile.coY) && !adjTiles.some(tille => tille.num == tile.num)) {
-          dubAdjTiles.push(tile)
+  if (double) {
+    adjTiles.forEach(adjTile => {
+      Tiles.forEach(tile => {
+        if (!blockers.includes(adjTile.num) && adjTile.terrain != "water") {
+          if (MyGame.prototype.checkAdjacent(tile.coX, tile.coY, adjTile.coX, adjTile.coY) && !adjTiles.some(tille => tille.num == tile.num) && tile.terrain != "water") {
+            dubAdjTiles.push(tile)
+          }
         }
-      }
-    })
+      })
 
-  })
+    })
+  }
+
 
   allTiles = dubAdjTiles.concat(adjTiles);
 
 
 
   Structures.forEach(struct => {
-    if (MyGame.prototype.checkDoubleAdjacent(struct.coX, struct.coY, this.coX, this.coY)) {
+    if (MyGame.prototype.checkAdjacent(struct.coX, struct.coY, this.coX, this.coY)) {
       adjStructs.push(struct);
     }
   })
 
-  return [allTiles, adjUnits, adjStructs, blockers];
+  return [allTiles, adjUnits, adjStructs];
 
 }
 
@@ -346,10 +337,10 @@ Unit.prototype.Moves1 = function (tile, adjUnits) {
   return noMove;
 }
 
-Unit.prototype.Moves2 = function (tile, adjUnits, blocked) {
+Unit.prototype.Moves2 = function (tile, adjUnits) {
   let noMove = true;
   adjUnits.forEach(unit => {
-    if (unit.num == tile.num || blocked.includes(tile.num)) {
+    if (unit.num == tile.num) {
       noMove = false;
       return noMove;
     }
@@ -361,7 +352,7 @@ Unit.prototype.Moves2 = function (tile, adjUnits, blocked) {
 Unit.prototype.Attacks1 = function (tile, adjUnits) {
   let noAttack = false;
   adjUnits.forEach(unit => {
-    if (unit.num == tile.num && unit.team != this.team) {
+    if (unit.num == tile.num && unit.team != this.team && MyGame.prototype.checkAdjacent(unit.coX, unit.coY, this.coX, this.coY)) {
       noAttack = true;
       return noAttack;
     }
